@@ -9,6 +9,9 @@ Supports:
 
 import os
 import smtplib
+import json
+import urllib.request
+import urllib.error
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.header import Header
@@ -204,7 +207,8 @@ def _send_via_resend_api(to_email: str, subject: str, html_content: str) -> bool
             data=payload,
             headers={
                 "Authorization": f"Bearer {RESEND_API_KEY}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "User-Agent": "TeamForge-Backend/3.1"
             },
             method="POST"
         )
@@ -231,12 +235,12 @@ def send_validation_email(to_email: str, report_data: Dict[str, Any], job_id: st
     subject = f"[Team Forge] Validation Dossier: {product_name}"
     html_content = build_email_html(report_data, job_id)
 
-    # 1. Primary Cloud Delivery: Vercel HTTPS Relay (bypasses Render's port 587/465 block)
-    if _send_via_vercel_relay(to_email, subject, html_content):
+    # 1. Primary Cloud Delivery: Resend REST API (HTTPS Port 443 - instantaneous delivery)
+    if _send_via_resend_api(to_email, subject, html_content):
         return True
 
-    # 2. Secondary Cloud Delivery: Resend REST API (if RESEND_API_KEY is present)
-    if _send_via_resend_api(to_email, subject, html_content):
+    # 2. Secondary Cloud Delivery: Vercel HTTPS Relay (bypasses Render's port 587/465 block)
+    if _send_via_vercel_relay(to_email, subject, html_content):
         return True
 
     # 3. Direct Gmail SMTP (Port 587 STARTTLS / Port 465 SSL)
@@ -288,13 +292,13 @@ def test_smtp_connection(to_email: str) -> Dict[str, Any]:
     body = "Team Forge live email delivery is verified and functional."
     html = f"<html><body><h2>Team Forge Live Email Test</h2><p>{body}</p><p>Recipient: {to_email}</p></body></html>"
 
-    # Test 1: Vercel Relay
-    if _send_via_vercel_relay(to_email, subject, html):
-        return {"success": True, "method": "Vercel HTTPS Relay (Port 443)", "recipient": to_email}
-
-    # Test 2: Resend API
+    # Test 1: Resend REST API (HTTPS Port 443)
     if _send_via_resend_api(to_email, subject, html):
         return {"success": True, "method": "Resend REST API (Port 443)", "recipient": to_email}
+
+    # Test 2: Vercel Relay
+    if _send_via_vercel_relay(to_email, subject, html):
+        return {"success": True, "method": "Vercel HTTPS Relay (Port 443)", "recipient": to_email}
 
     # Test 3: Direct SMTP
     errors = {}
