@@ -18,7 +18,9 @@ SMTP_SERVER = os.environ.get("SMTP_SERVER", "smtp.gmail.com")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
 SMTP_USER = os.environ.get("SMTP_USER", "").strip()
 SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "").strip()
-APP_BASE_URL = os.environ.get("APP_BASE_URL", "http://localhost:5173")
+APP_BASE_URL = os.environ.get("APP_BASE_URL", "https://team-forge-frontend-one.vercel.app")
+VERCEL_RELAY_URL = os.environ.get("VERCEL_RELAY_URL", "https://team-forge-frontend-one.vercel.app/api/send-email")
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
 
 
 def build_email_html(report_data: Dict[str, Any], job_id: str) -> str:
@@ -161,18 +163,83 @@ def build_email_html(report_data: Dict[str, Any], job_id: str) -> str:
     return html
 
 
+def _send_via_vercel_relay(to_email: str, subject: str, html_content: str) -> bool:
+    """Dispatches email via the Vercel HTTPS relay (port 443), bypassing cloud SMTP port blocks."""
+    if not VERCEL_RELAY_URL:
+        return False
+    try:
+        payload = json.dumps({
+            "to": to_email,
+            "subject": subject,
+            "html": html_content
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            VERCEL_RELAY_URL,
+            data=payload,
+            headers={"Content-Type": "application/json", "User-Agent": "TeamForge-Backend/3.1"},
+            method="POST"
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            if resp.status == 200:
+                print(f"[email_service] Successfully sent email to {to_email} via Vercel HTTPS Relay (Port 443)", flush=True)
+                return True
+    except Exception as exc:
+        print(f"[email_service] Vercel relay delivery attempt: {exc}", flush=True)
+    return False
+
+
+def _send_via_resend_api(to_email: str, subject: str, html_content: str) -> bool:
+    """Dispatches email via Resend REST API (HTTPS port 443)."""
+    if not RESEND_API_KEY:
+        return False
+    try:
+        payload = json.dumps({
+            "from": "Team Forge AI <onboarding@resend.dev>",
+            "to": [to_email],
+            "subject": subject,
+            "html": html_content
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            "https://api.resend.com/emails",
+            data=payload,
+            headers={
+                "Authorization": f"Bearer {RESEND_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            method="POST"
+        )
+        with urllib.request.urlopen(req, timeout=12) as resp:
+            if resp.status in (200, 201):
+                print(f"[email_service] Successfully sent email to {to_email} via Resend REST API (Port 443)", flush=True)
+                return True
+    except Exception as exc:
+        print(f"[email_service] Resend API attempt: {exc}", flush=True)
+    return False
+
+
 def send_validation_email(to_email: str, report_data: Dict[str, Any], job_id: str) -> bool:
     """
     Sends the completed validation report to the user's Gmail.
-    Supports dual-port delivery: tries Port 587 (STARTTLS), then fails over to Port 465 (SSL).
-    If SMTP credentials are not configured, saves a local HTML preview to backend/data/emails/.
+    Cascades through 4 delivery methods:
+      1. Vercel Serverless Email Relay (HTTPS Port 443 - zero-cost, bypasses cloud SMTP port blocks)
+      2. Resend REST API (HTTPS Port 443 - if configured)
+      3. Live Gmail SMTP (Port 587 STARTTLS / Port 465 SSL - for local dev or unblocked hosts)
+      4. Responsive HTML Preview Fallback (data/emails/)
     """
     extracted = report_data.get("extracted_data") or {}
     product_name = extracted.get("product_name") or "Your Startup Pitch"
     subject = f"[Team Forge] Validation Dossier: {product_name}"
     html_content = build_email_html(report_data, job_id)
 
-    # If live SMTP credentials are configured, send via TLS or SSL SMTP
+    # 1. Primary Cloud Delivery: Vercel HTTPS Relay (bypasses Render's port 587/465 block)
+    if _send_via_vercel_relay(to_email, subject, html_content):
+        return True
+
+    # 2. Secondary Cloud Delivery: Resend REST API (if RESEND_API_KEY is present)
+    if _send_via_resend_api(to_email, subject, html_content):
+        return True
+
+    # 3. Direct Gmail SMTP (Port 587 STARTTLS / Port 465 SSL)
     if SMTP_USER and SMTP_PASSWORD:
         msg = MIMEMultipart("alternative")
         msg["Subject"] = Header(subject, "utf-8")
@@ -181,9 +248,9 @@ def send_validation_email(to_email: str, report_data: Dict[str, Any], job_id: st
         part = MIMEText(html_content, "html", "utf-8")
         msg.attach(part)
 
-        # Attempt 1: Port 587 STARTTLS
+        # Attempt Port 587 STARTTLS
         try:
-            server = smtplib.SMTP(SMTP_SERVER, 587, timeout=15)
+            server = smtplib.SMTP(SMTP_SERVER, 587, timeout=10)
             server.starttls()
             server.login(SMTP_USER, SMTP_PASSWORD)
             server.sendmail(SMTP_USER, [to_email], msg.as_string())
@@ -193,53 +260,69 @@ def send_validation_email(to_email: str, report_data: Dict[str, Any], job_id: st
         except Exception as exc587:
             print(f"[email_service] Port 587 failed: {exc587}. Retrying via Port 465 SSL...", flush=True)
 
-        # Attempt 2: Port 465 SSL Fallback
+        # Attempt Port 465 SSL
         try:
-            server = smtplib.SMTP_SSL(SMTP_SERVER, 465, timeout=15)
+            server = smtplib.SMTP_SSL(SMTP_SERVER, 465, timeout=10)
             server.login(SMTP_USER, SMTP_PASSWORD)
             server.sendmail(SMTP_USER, [to_email], msg.as_string())
             server.quit()
             print(f"[email_service] Successfully sent validation email to {to_email} via Port 465 SSL", flush=True)
             return True
         except Exception as exc465:
-            print(f"[email_service] Port 465 SSL failed: {exc465}. Falling back to preview.", flush=True)
+            print(f"[email_service] Port 465 SSL failed: {exc465}.", flush=True)
 
-    # Local development preview fallback
+    # 4. Local development preview fallback
     email_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "emails")
     os.makedirs(email_dir, exist_ok=True)
     preview_file = os.path.join(email_dir, f"{job_id}.html")
     with open(preview_file, "w", encoding="utf-8") as f:
         f.write(html_content)
 
-    print(f"[email_service] Live SMTP not active or failed. Saved responsive HTML email preview to: {preview_file}", flush=True)
+    print(f"[email_service] Saved responsive HTML email preview to: {preview_file}", flush=True)
     return False
 
 
 def test_smtp_connection(to_email: str) -> Dict[str, Any]:
-    """Tests live Gmail SMTP connection and dispatches a verification email."""
-    if not SMTP_USER or not SMTP_PASSWORD:
-        return {"success": False, "error": "SMTP_USER or SMTP_PASSWORD not configured in environment"}
+    """Tests live email connectivity across all delivery tiers."""
+    subject = "[Team Forge] Live Email Delivery Test"
+    body = "Team Forge live email delivery is verified and functional."
+    html = f"<html><body><h2>Team Forge Live Email Test</h2><p>{body}</p><p>Recipient: {to_email}</p></body></html>"
 
-    subject = "[Team Forge] Live SMTP Diagnostic Test"
-    body = "Team Forge live email delivery is verified and fully functional."
-    msg = MIMEText(body, "plain", "utf-8")
-    msg["Subject"] = Header(subject, "utf-8")
-    msg["From"] = f"Team Forge AI <{SMTP_USER}>"
-    msg["To"] = to_email
+    # Test 1: Vercel Relay
+    if _send_via_vercel_relay(to_email, subject, html):
+        return {"success": True, "method": "Vercel HTTPS Relay (Port 443)", "recipient": to_email}
 
-    try:
-        server = smtplib.SMTP(SMTP_SERVER, 587, timeout=12)
-        server.starttls()
-        server.login(SMTP_USER, SMTP_PASSWORD)
-        server.sendmail(SMTP_USER, [to_email], msg.as_string())
-        server.quit()
-        return {"success": True, "method": "Port 587 STARTTLS", "recipient": to_email}
-    except Exception as e587:
+    # Test 2: Resend API
+    if _send_via_resend_api(to_email, subject, html):
+        return {"success": True, "method": "Resend REST API (Port 443)", "recipient": to_email}
+
+    # Test 3: Direct SMTP
+    errors = {}
+    if SMTP_USER and SMTP_PASSWORD:
         try:
-            server = smtplib.SMTP_SSL(SMTP_SERVER, 465, timeout=12)
+            server = smtplib.SMTP(SMTP_SERVER, 587, timeout=10)
+            server.starttls()
             server.login(SMTP_USER, SMTP_PASSWORD)
+            msg = MIMEText(body, "plain", "utf-8")
+            msg["Subject"] = Header(subject, "utf-8")
+            msg["From"] = f"Team Forge AI <{SMTP_USER}>"
+            msg["To"] = to_email
             server.sendmail(SMTP_USER, [to_email], msg.as_string())
             server.quit()
-            return {"success": True, "method": "Port 465 SSL", "recipient": to_email, "error_587": str(e587)}
-        except Exception as e465:
-            return {"success": False, "error_587": str(e587), "error_465": str(e465)}
+            return {"success": True, "method": "Port 587 STARTTLS", "recipient": to_email}
+        except Exception as e587:
+            errors["error_587"] = str(e587)
+            try:
+                server = smtplib.SMTP_SSL(SMTP_SERVER, 465, timeout=10)
+                server.login(SMTP_USER, SMTP_PASSWORD)
+                msg = MIMEText(body, "plain", "utf-8")
+                msg["Subject"] = Header(subject, "utf-8")
+                msg["From"] = f"Team Forge AI <{SMTP_USER}>"
+                msg["To"] = to_email
+                server.sendmail(SMTP_USER, [to_email], msg.as_string())
+                server.quit()
+                return {"success": True, "method": "Port 465 SSL", "recipient": to_email, "error_587": str(e587)}
+            except Exception as e465:
+                errors["error_465"] = str(e465)
+
+    return {"success": False, "errors": errors, "hint": "Cloud host blocked raw SMTP ports. Use Vercel relay or Resend API."}

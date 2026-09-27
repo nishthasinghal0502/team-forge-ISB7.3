@@ -19,6 +19,7 @@ import os
 import sys
 import uuid
 from typing import Any, Dict, List, Optional
+from pydantic import BaseModel
 
 # Ensure UTF-8 output encoding to avoid Windows charmap encoding errors
 if hasattr(sys.stdout, "reconfigure"):
@@ -198,6 +199,29 @@ def auth_google(request: GoogleAuthRequest):
         return AuthResponse(token=token, user=user)
     except Exception as exc:
         raise HTTPException(status_code=401, detail=f"Authentication failed: {str(exc)}")
+
+
+
+class DirectEmailAuthRequest(BaseModel):
+    email: str
+    name: Optional[str] = None
+
+
+@app.post("/api/auth/email", response_model=AuthResponse)
+def auth_email_direct(request: DirectEmailAuthRequest):
+    """
+    Direct email login for founders without Google One-Tap.
+    Registers or retrieves the user and issues a 7-day signed JWT session token.
+    """
+    clean_email = request.email.strip().lower()
+    if not clean_email or "@" not in clean_email:
+        raise HTTPException(status_code=400, detail="A valid email address is required.")
+
+    name = request.name.strip() if request.name else clean_email.split("@")[0].capitalize()
+    avatar_url = f"https://api.dicebear.com/7.x/bottts/svg?seed={clean_email}"
+    user = create_or_get_user(email=clean_email, name=name, avatar_url=avatar_url)
+    token = create_access_token(user)
+    return AuthResponse(token=token, user=user)
 
 
 @app.get("/api/auth/me")

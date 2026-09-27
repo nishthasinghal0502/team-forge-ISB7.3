@@ -14,6 +14,7 @@ import SWOTAnalysis from "./components/SWOTAnalysis";
 import MVPRecommendation from "./components/MVPRecommendation";
 import GTMStrategy from "./components/GTMStrategy";
 import StartupAdvisorChat from "./components/StartupAdvisorChat";
+import LoginPage from "./components/LoginPage";
 
 // Auto-detect backend: use local server on localhost, otherwise fallback to deployed Render backend
 const API_URL =
@@ -40,6 +41,39 @@ const RESEARCH_STAGES = [
 ];
 
 export default function App() {
+  // Client-Side Route State (dashboard vs login)
+  const [currentRoute, setCurrentRoute] = useState(() => {
+    if (typeof window !== "undefined") {
+      const path = window.location.pathname;
+      const search = window.location.search;
+      if (path === "/login" || search.includes("page=login")) return "login";
+    }
+    return "dashboard";
+  });
+
+  const navigateTo = (route) => {
+    setCurrentRoute(route);
+    if (typeof window !== "undefined" && window.history?.pushState) {
+      const url = route === "login" ? "/login" : "/";
+      window.history.pushState({ route }, "", url);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    const onPopState = () => {
+      const path = window.location.pathname;
+      const search = window.location.search;
+      if (path === "/login" || search.includes("page=login")) {
+        setCurrentRoute("login");
+      } else {
+        setCurrentRoute("dashboard");
+      }
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
   const [idea, setIdea] = useState("");
   const [productName, setProductName] = useState("");
   const [industry, setIndustry] = useState("");
@@ -411,6 +445,22 @@ export default function App() {
   const opportunityCount = result?.white_space_analysis?.opportunities?.length || 0;
   const hasFormContent = Boolean(idea || productName || industry || targetAudience);
 
+  // Render dedicated Login Page if on /login route
+  if (currentRoute === "login") {
+    return (
+      <LoginPage
+        user={user}
+        onLogin={async (credential) => {
+          const u = await handleLogin(credential);
+          navigateTo("dashboard");
+          return u;
+        }}
+        onLogout={handleLogout}
+        onBack={() => navigateTo("dashboard")}
+      />
+    );
+  }
+
   return (
     <div className="page">
       <div className="top-navigation-bar">
@@ -420,6 +470,7 @@ export default function App() {
           onLogin={handleLogin}
           onLogout={handleLogout}
           onOpenReports={() => setShowReportsModal(true)}
+          onNavigateToLogin={() => navigateTo("login")}
         />
       </div>
 
