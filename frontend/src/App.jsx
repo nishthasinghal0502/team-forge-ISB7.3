@@ -261,11 +261,24 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [status]);
 
+  // When validation completes, automatically and smoothly scroll to the Executive Overview
+  useEffect(() => {
+    if (status === "done" && result) {
+      const timer = setTimeout(() => {
+        const topEl = document.getElementById("section-overview") || document.querySelector(".results");
+        if (topEl) {
+          topEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [status, result]);
+
   const handleJumpTo = (e, targetId) => {
     e.preventDefault();
     const el = document.getElementById(targetId);
     if (el) {
-      const navOffset = 70;
+      const navOffset = 64;
       const elPosition = el.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({
         top: elPosition - navOffset,
@@ -696,7 +709,12 @@ export default function App() {
         {status === "done" && result && (
           <section className="results">
             <nav className="quick-jump-nav" aria-label="Report sections">
-              <span className="quick-jump-label">§ JUMP TO:</span>
+              <span className="quick-jump-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: 6, verticalAlign: "middle" }} aria-hidden="true">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+                JUMP TO:
+              </span>
               <div className="quick-jump-links">
                 {[
                   { id: "section-overview", label: "Overview", show: true },

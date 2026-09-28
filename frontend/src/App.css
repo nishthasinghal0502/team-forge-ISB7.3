@@ -428,19 +428,20 @@ button[type="submit"]:disabled {
    -------------------------------------------------------------------------- */
 .quick-jump-nav {
   position: sticky;
-  top: 12px;
+  top: 0;
   z-index: 100;
   display: flex;
   align-items: center;
-  gap: 16px;
-  background: rgba(255, 255, 255, 0.94);
-  border: 1.5px solid #222222;
+  gap: 12px;
+  background: rgba(254, 253, 250, 0.96);
+  border: 1px solid #dcd7cb;
   border-left: 4px solid var(--accent-amber);
   border-radius: 6px;
-  padding: 10px 18px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  margin-bottom: 24px;
-  backdrop-filter: blur(12px);
+  padding: 8px 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .quick-jump-label {
@@ -450,22 +451,37 @@ button[type="submit"]:disabled {
   letter-spacing: 0.12em;
   color: var(--accent-amber);
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
 }
 
 .quick-jump-links {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 6px 10px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 6px 8px;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(184, 134, 11, 0.3) transparent;
+}
+
+.quick-jump-links::-webkit-scrollbar {
+  height: 3px;
+}
+
+.quick-jump-links::-webkit-scrollbar-thumb {
+  background: rgba(184, 134, 11, 0.3);
+  border-radius: 3px;
 }
 
 .jump-link {
   font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
   color: #444444;
-  letter-spacing: 0.04em;
-  padding: 8px 16px;
+  letter-spacing: 0.03em;
+  padding: 6px 12px;
   border-radius: 4px;
   border: 1px solid var(--border-line);
   background: #FFFFFF;
@@ -473,7 +489,8 @@ button[type="submit"]:disabled {
   cursor: pointer;
   transition: all 160ms ease;
   white-space: nowrap;
-  line-height: 1;
+  line-height: 1.2;
+  flex-shrink: 0;
 }
 
 .jump-link:hover {
@@ -500,8 +517,12 @@ button[type="submit"]:disabled {
 #section-market,
 #section-personas,
 #section-competitors,
-#section-sources {
-  scroll-margin-top: 84px;
+#section-swot,
+#section-mvp,
+#section-gtm,
+#section-sources,
+#section-advisor {
+  scroll-margin-top: 68px;
 }
 
 /* --------------------------------------------------------------------------

@@ -26,11 +26,18 @@ export default function StartupAdvisorChat({ ideaId, currentView, apiUrl }) {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const messagesEndRef = useRef(null);
+  const isInitialMount = useRef(true);
 
   const activeViewLabel = SECTION_LABELS[currentView] || currentView || "General Overview";
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Prevent hijacking window scroll on initial page load / dossier arrival
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    // Only scroll within the closest scrollable container (chat thread)
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [messages, loading]);
 
   const handleSend = async (textToSend) => {
@@ -124,7 +131,11 @@ export default function StartupAdvisorChat({ ideaId, currentView, apiUrl }) {
           <>
             {/* Context Notice */}
             <div className="advisor-grounding-banner">
-              <span className="advisor-banner-icon">🛡️</span>
+              <span className="advisor-banner-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </span>
               <span className="advisor-banner-text">
                 <strong>Anti-Hallucination Grounding:</strong> Advisor answers are strictly bound to the empirical data collected for this startup idea.
               </span>
