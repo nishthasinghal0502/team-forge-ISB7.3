@@ -24,6 +24,7 @@ SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "").strip()
 APP_BASE_URL = os.environ.get("APP_BASE_URL", "https://team-forge-frontend-one.vercel.app")
 VERCEL_RELAY_URL = os.environ.get("VERCEL_RELAY_URL", "https://team-forge-frontend-one.vercel.app/api/send-email")
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
+RESEND_FROM_EMAIL = os.environ.get("RESEND_FROM_EMAIL", "Team Forge AI <onboarding@resend.dev>").strip()
 
 
 def build_email_html(report_data: Dict[str, Any], job_id: str) -> str:
@@ -192,16 +193,23 @@ def _send_via_vercel_relay(to_email: str, subject: str, html_content: str) -> bo
 
 
 def _send_via_resend_api(to_email: str, subject: str, html_content: str) -> bool:
-    """Dispatches email via Resend REST API (HTTPS port 443)."""
+    """Dispatches email via Resend REST API (HTTPS port 443) with multipart HTML + plain-text to optimize inbox deliverability."""
     if not RESEND_API_KEY:
         return False
     try:
-        payload = json.dumps({
-            "from": "Team Forge AI <onboarding@resend.dev>",
+        # Include plain-text alternative to significantly reduce spam filter penalties
+        plain_summary = f"{subject}\n\nYour autonomous startup validation analysis is complete.\nOpen your browser dashboard or view the formatted HTML dossier above.\n\nTeam Forge AI Intelligence Engine"
+        from_sender = RESEND_FROM_EMAIL if RESEND_FROM_EMAIL else "Team Forge AI <onboarding@resend.dev>"
+        
+        payload_dict = {
+            "from": from_sender,
             "to": [to_email],
             "subject": subject,
-            "html": html_content
-        }).encode("utf-8")
+            "html": html_content,
+            "text": plain_summary,
+            "reply_to": SMTP_USER if SMTP_USER else to_email
+        }
+        payload = json.dumps(payload_dict).encode("utf-8")
         req = urllib.request.Request(
             "https://api.resend.com/emails",
             data=payload,
