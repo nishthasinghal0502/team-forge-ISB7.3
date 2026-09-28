@@ -96,10 +96,12 @@ export default function ResultsSummary({
         {CATEGORY_ORDER.map((cat) => {
           const count = categories[cat] || (sources.filter((s) => s.category === cat).length) || 0;
           return (
-            <div key={cat} className="summary-category-item">
+            <div key={cat} className={`summary-category-item ${count === 0 ? "is-empty" : ""}`}>
               <span className="summary-cat-label">{cat}</span>
               <div className="summary-cat-metrics">
-                <span className="summary-cat-count">{count} {count === 1 ? "source" : "sources"}</span>
+                <span className={`summary-cat-count ${count === 0 ? "zero-label" : ""}`}>
+                  {count === 0 ? "0 sources" : `${count} ${count === 1 ? "source" : "sources"}`}
+                </span>
               </div>
             </div>
           );

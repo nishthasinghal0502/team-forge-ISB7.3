@@ -161,10 +161,16 @@ input[type="text"]::placeholder {
 }
 
 .char-count {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink-muted);
+  font-family: var(--font-mono, monospace);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-muted, #64748b);
+  background: var(--surface-subtle, #f8fafc);
+  border: 1px solid var(--border-subtle, #e2e8f0);
+  border-radius: 6px;
+  padding: 3px 10px;
+  letter-spacing: 0.02em;
+  user-select: none;
 }
 
 .form-grid {
@@ -670,6 +676,18 @@ button[type="submit"]:disabled {
   border: 1px solid #E2DDD5;
   border-radius: 4px;
   padding: 14px 18px;
+  transition: all 0.15s ease;
+}
+
+.summary-category-item.is-empty {
+  opacity: 0.72;
+  border-style: dashed;
+  background: #fbfaf7;
+}
+
+.summary-cat-count.zero-label {
+  color: var(--ink-muted, #64748b);
+  font-weight: 500;
 }
 
 .summary-cat-label {
@@ -4256,6 +4274,17 @@ button[type="submit"]:disabled {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.email-send-action-btn {
+  background: #2563eb;
+  color: #ffffff;
+  border: 1px solid #1d4ed8;
+}
+
+.email-send-action-btn:hover {
+  background: #1d4ed8;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
 .email-preview-link-btn {
   background: #ffffff;
   color: #1e293b;
@@ -4282,7 +4311,12 @@ button[type="submit"]:disabled {
 }
 
 .email-status-icon {
-  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  color: #16a34a;
+  flex-shrink: 0;
 }
 
 .email-status-text {

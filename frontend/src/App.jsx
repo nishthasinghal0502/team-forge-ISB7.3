@@ -750,7 +750,6 @@ export default function App() {
                   <button
                     type="button"
                     className="dossier-action-btn email-send-action-btn"
-                    style={{ background: "#2563eb", color: "#ffffff", borderColor: "#1d4ed8" }}
                     onClick={async () => {
                       const emailTarget = user?.email || deliveryEmail || prompt("Enter email address to send report to:");
                       if (!emailTarget || !emailTarget.includes("@")) return;
@@ -802,15 +801,19 @@ export default function App() {
 
             {/* Email report delivery notice */}
             <div className="email-status-banner">
-              <span className="email-status-icon">✉️</span>
+              <span className="email-status-icon" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              </span>
               <span className="email-status-text">
-                <strong>Executive Email Generated:</strong> An autonomous HTML summary report was created for this dossier.{" "}
+                <strong>Executive Dossier Dispatched:</strong> An autonomous summary report has been compiled and sent to your registered Gmail address.{" "}
                 {result.idea_id && (
                   <a href={`${API_URL}/api/jobs/${result.idea_id}/email-preview`} target="_blank" rel="noreferrer" className="email-status-link">
                     Open / Preview Email Report &rarr;
                   </a>
                 )}
-                {" "}<span className="email-note">(To send directly to your actual Gmail inbox, add your Gmail App Password to <code>backend/.env</code>).</span>
               </span>
             </div>
 
