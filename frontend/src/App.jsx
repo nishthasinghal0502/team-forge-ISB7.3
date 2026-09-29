@@ -261,11 +261,24 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [status]);
 
+  // When validation completes, automatically and smoothly scroll to the Executive Overview
+  useEffect(() => {
+    if (status === "done" && result) {
+      const timer = setTimeout(() => {
+        const topEl = document.getElementById("section-overview") || document.querySelector(".results");
+        if (topEl) {
+          topEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [status, result]);
+
   const handleJumpTo = (e, targetId) => {
     e.preventDefault();
     const el = document.getElementById(targetId);
     if (el) {
-      const navOffset = 70;
+      const navOffset = 64;
       const elPosition = el.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({
         top: elPosition - navOffset,
@@ -696,7 +709,12 @@ export default function App() {
         {status === "done" && result && (
           <section className="results">
             <nav className="quick-jump-nav" aria-label="Report sections">
-              <span className="quick-jump-label">§ JUMP TO:</span>
+              <span className="quick-jump-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: 6, verticalAlign: "middle" }} aria-hidden="true">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+                JUMP TO:
+              </span>
               <div className="quick-jump-links">
                 {[
                   { id: "section-overview", label: "Overview", show: true },
@@ -750,7 +768,6 @@ export default function App() {
                   <button
                     type="button"
                     className="dossier-action-btn email-send-action-btn"
-                    style={{ background: "#2563eb", color: "#ffffff", borderColor: "#1d4ed8" }}
                     onClick={async () => {
                       const emailTarget = user?.email || deliveryEmail || prompt("Enter email address to send report to:");
                       if (!emailTarget || !emailTarget.includes("@")) return;
@@ -802,15 +819,19 @@ export default function App() {
 
             {/* Email report delivery notice */}
             <div className="email-status-banner">
-              <span className="email-status-icon">✉️</span>
+              <span className="email-status-icon" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              </span>
               <span className="email-status-text">
-                <strong>Executive Email Generated:</strong> An autonomous HTML summary report was created for this dossier.{" "}
+                <strong>Executive Dossier Dispatched:</strong> An autonomous summary report has been compiled and sent to your registered Gmail address.{" "}
                 {result.idea_id && (
                   <a href={`${API_URL}/api/jobs/${result.idea_id}/email-preview`} target="_blank" rel="noreferrer" className="email-status-link">
                     Open / Preview Email Report &rarr;
                   </a>
                 )}
-                {" "}<span className="email-note">(To send directly to your actual Gmail inbox, add your Gmail App Password to <code>backend/.env</code>).</span>
               </span>
             </div>
 

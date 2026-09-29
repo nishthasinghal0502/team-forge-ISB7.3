@@ -203,6 +203,30 @@ class ValidationCrewOrchestrator:
                 fallback_batches = self.web_searcher.search(extracted_data, max_results_per_category=6)
                 toolkit.collected_batches.extend(fallback_batches)
 
+        # [2b] 4-Vector Coverage Guarantee: Ensure every mandatory research vector has empirical sources
+        try:
+            current_sources = toolkit.get_structured_sources()
+            current_summary = toolkit.retrieval_agent.summarize_counts(current_sources)
+            counts_per_cat = current_summary.get("sources_per_category", {})
+            
+            all_vector_queries = self.web_searcher.build_queries(extracted_data)
+            for mandatory_cat in ["Competitors", "Market Size & Trends", "Customer Demand", "Industry News"]:
+                if counts_per_cat.get(mandatory_cat, 0) == 0:
+                    cat_query = all_vector_queries.get(mandatory_cat)
+                    if cat_query:
+                        _log(f"  [2b] Ensuring 4-vector coverage: Backfilling 0-source category '{mandatory_cat}' with query: '{cat_query}'")
+                        batch = toolkit.search_agent._execute_single_category_search(mandatory_cat, cat_query, max_results=5)
+                        if batch.get("response", {}).get("results"):
+                            toolkit.collected_batches.append(batch)
+                            toolkit.tool_call_trace.append({
+                                "tool": f"search_{mandatory_cat.lower().replace(' ', '_').replace('&_', '')}_guarantee",
+                                "category": mandatory_cat,
+                                "query": cat_query,
+                                "guaranteed": True,
+                            })
+        except Exception as cov_err:
+            _log(f"  [2b] Vector coverage guarantee check warning: {cov_err}")
+
         # [3] Data Retrieval Agent (DETERMINISTIC NON-LLM STEP)
         _log("\n[3] Data Retrieval (Deterministic Sanitization, Filtering, Deduplication)")
         structured_sources_raw = toolkit.get_structured_sources()
