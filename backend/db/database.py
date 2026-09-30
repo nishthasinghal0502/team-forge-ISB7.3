@@ -35,9 +35,19 @@ def init_db():
         email TEXT UNIQUE NOT NULL,
         name TEXT,
         avatar_url TEXT,
+        password_hash TEXT,
+        auth_provider TEXT DEFAULT 'email',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     """)
+
+    # Safe schema migration for existing SQLite databases
+    cursor.execute("PRAGMA table_info(users)")
+    user_cols = [r["name"] for r in cursor.fetchall()]
+    if "password_hash" not in user_cols:
+        cursor.execute("ALTER TABLE users ADD COLUMN password_hash TEXT;")
+    if "auth_provider" not in user_cols:
+        cursor.execute("ALTER TABLE users ADD COLUMN auth_provider TEXT DEFAULT 'email';")
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS validation_jobs (
@@ -62,6 +72,26 @@ def init_db():
 init_db()
 
 
+def create_user_with_password(email: str, password_hash: str, name: str) -> Dict[str, Any]:
+    """Creates a new user record with a bcrypt hashed password."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    user_id = f"usr_{os.urandom(6).hex()}"
+    avatar_url = f"https://api.dicebear.com/7.x/bottts/svg?seed={email}"
+    cursor.execute(
+        """
+        INSERT INTO users (id, email, password_hash, name, avatar_url, auth_provider)
+        VALUES (?, ?, ?, ?, ?, 'email')
+        """,
+        (user_id, email, password_hash, name, avatar_url)
+    )
+    conn.commit()
+    cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+    return dict(row)
+
+
 def create_or_get_user(email: str, name: Optional[str] = None, avatar_url: Optional[str] = None) -> Dict[str, Any]:
     """Creates a user if not already existing, or returns the existing record."""
     conn = get_connection()
@@ -75,7 +105,7 @@ def create_or_get_user(email: str, name: Optional[str] = None, avatar_url: Optio
 
     user_id = f"usr_{os.urandom(6).hex()}"
     cursor.execute(
-        "INSERT INTO users (id, email, name, avatar_url) VALUES (?, ?, ?, ?)",
+        "INSERT INTO users (id, email, name, avatar_url, auth_provider) VALUES (?, ?, ?, ?, 'google')",
         (user_id, email, name, avatar_url)
     )
     conn.commit()

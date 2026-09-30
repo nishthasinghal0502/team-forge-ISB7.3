@@ -61,7 +61,10 @@ export default function UserAuthHeader({ user, token, onLogin, onLogout, onOpenR
             <span className="user-display-email">{user.email}</span>
           </div>
           <button type="button" className="auth-action-btn reports-btn" onClick={onOpenReports}>
-            📁 My Reports
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6, verticalAlign: "middle" }}>
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+            </svg>
+            <span>My Reports</span>
           </button>
           <button type="button" className="auth-action-btn logout-btn" onClick={onLogout}>
             Sign Out

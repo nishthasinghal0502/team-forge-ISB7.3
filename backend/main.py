@@ -41,6 +41,8 @@ from schemas.validation_schemas import (
     AdvisorChatResponse,
     GoogleAuthRequest,
     AuthResponse,
+    SignupRequest,
+    LoginRequest,
     AsyncValidationRequest,
     AsyncValidationResponse,
 )
@@ -49,11 +51,14 @@ from services.auth_service import (
     verify_google_credential,
     create_access_token,
     verify_access_token,
+    hash_password,
+    check_password,
 )
 from services.email_service import send_validation_email, test_smtp_connection
 from db.database import (
     get_user_by_email,
     create_or_get_user,
+    create_user_with_password,
     get_user_by_id,
     create_validation_job,
     update_job_status,
@@ -182,6 +187,57 @@ def advisor_chat(request: AdvisorChatRequest):
 # AUTHENTICATION & ASYNCHRONOUS EMAIL AUTOMATION ENDPOINTS
 # =============================================================================
 
+@app.post("/api/auth/signup", response_model=AuthResponse)
+def auth_signup(request: SignupRequest):
+    """
+    Registers a new user with name, email, and password.
+    Hashes the password with bcrypt, persists to SQLite, and issues a 7-day JWT.
+    """
+    clean_email = request.email.strip().lower()
+    if "@" not in clean_email or "." not in clean_email:
+        raise HTTPException(status_code=400, detail="Please enter a valid email address.")
+    if len(request.password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters long.")
+    clean_name = request.name.strip()
+    if not clean_name:
+        raise HTTPException(status_code=400, detail="Name is required.")
+
+    existing = get_user_by_email(clean_email)
+    if existing:
+        raise HTTPException(status_code=400, detail="An account with this email already exists.")
+
+    hashed = hash_password(request.password)
+    user = create_user_with_password(email=clean_email, password_hash=hashed, name=clean_name)
+    user_safe = {k: v for k, v in user.items() if k != "password_hash"}
+    token = create_access_token(user_safe)
+    return AuthResponse(token=token, user=user_safe)
+
+
+@app.post("/api/auth/login", response_model=AuthResponse)
+def auth_login(request: LoginRequest):
+    """
+    Authenticates a user with email and password.
+    Validates bcrypt hash and issues a 7-day JWT session token.
+    """
+    clean_email = request.email.strip().lower()
+    user = get_user_by_email(clean_email)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+
+    if not user.get("password_hash"):
+        raise HTTPException(
+            status_code=401,
+            detail="This account was registered using Google Sign-In. Please click Continue with Google."
+        )
+
+    if not check_password(request.password, user["password_hash"]):
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+
+    user_safe = {k: v for k, v in user.items() if k != "password_hash"}
+    token = create_access_token(user_safe)
+    return AuthResponse(token=token, user=user_safe)
+
+
 @app.post("/api/auth/google", response_model=AuthResponse)
 def auth_google(request: GoogleAuthRequest):
     """
@@ -236,7 +292,8 @@ def auth_me(authorization: Optional[str] = Header(None)):
     user = get_user_by_id(payload["user_id"])
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return {"user": user}
+    user_safe = {k: v for k, v in user.items() if k != "password_hash"}
+    return {"user": user_safe}
 
 
 @app.post("/api/validate/async", response_model=AsyncValidationResponse, status_code=202)
