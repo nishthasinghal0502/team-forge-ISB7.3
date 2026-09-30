@@ -3686,12 +3686,10 @@ button[type="submit"]:disabled {
 }
 
 .app-header-logo-img {
-  height: 40px;
+  height: 44px;
   width: auto;
-  max-width: 175px;
+  max-width: 200px;
   object-fit: contain;
-  mix-blend-mode: multiply;
-  border-radius: 4px;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 

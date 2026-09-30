@@ -8,7 +8,7 @@ export default function LandingPage({ onNavigate }) {
       <header className="landing-navbar">
         <div className="landing-nav-inner">
           <div className="landing-brand" onClick={() => onNavigate("landing")} style={{ cursor: "pointer" }}>
-            <img src="/idea_validator_logo.jpg" alt="VYIBE — Validate Your Idea Before Execution" className="landing-brand-logo-img" />
+            <img src="/idea_validator_logo.png" alt="VYIBE — Validate Your Idea Before Execution" className="landing-brand-logo-img" />
           </div>
 
           <div className="landing-nav-actions">
@@ -252,7 +252,7 @@ export default function LandingPage({ onNavigate }) {
         <div className="landing-footer-inner">
           <div className="footer-left">
             <div className="footer-brand" onClick={() => onNavigate("landing")} style={{ cursor: "pointer" }}>
-              <img src="/idea_validator_logo.jpg" alt="VYIBE" className="footer-brand-logo-img" />
+              <img src="/idea_validator_logo.png" alt="VYIBE" className="footer-brand-logo-img" />
             </div>
             <p className="footer-copy">
               Autonomous Startup Idea Validator & Market Intelligence Dossiers.

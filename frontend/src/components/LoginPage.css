@@ -56,12 +56,10 @@
 }
 
 .auth-logo-img {
-  height: 38px;
+  height: 44px;
   width: auto;
-  max-width: 160px;
+  max-width: 190px;
   object-fit: contain;
-  mix-blend-mode: multiply;
-  border-radius: 4px;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 

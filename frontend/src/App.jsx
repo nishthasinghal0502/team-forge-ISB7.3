@@ -452,7 +452,7 @@ export default function App() {
           title="VYIBE — Back to Home"
         >
           <img
-            src="/idea_validator_logo.jpg"
+            src="/idea_validator_logo.png"
             alt="VYIBE — Validate Your Idea Before Execution"
             className="app-header-logo-img"
           />
