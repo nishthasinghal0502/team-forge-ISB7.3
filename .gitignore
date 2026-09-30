@@ -23,6 +23,8 @@ frontend/.env
 *.png
 !docs/*.jpg
 !docs/*.png
+!frontend/public/*
+!frontend/src/assets/*
 backend/*_payload.json
 backend/*_results.json
 backend/*_response.json

@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    LANDING PAGE STYLING - EDITORIAL RESEARCH CANVAS
    ========================================================================== */
 
@@ -36,6 +36,36 @@
   align-items: center;
   gap: 10px;
   cursor: pointer;
+}
+
+.landing-brand-logo-img {
+  height: 42px;
+  width: auto;
+  max-width: 175px;
+  object-fit: contain;
+  border-radius: 4px;
+  mix-blend-mode: multiply;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.landing-brand:hover .landing-brand-logo-img {
+  opacity: 0.92;
+  transform: scale(1.02);
+}
+
+.footer-brand-logo-img {
+  height: 38px;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
+  border-radius: 4px;
+  mix-blend-mode: multiply;
+  margin-bottom: 6px;
+  transition: opacity 0.2s ease;
+}
+
+.footer-brand:hover .footer-brand-logo-img {
+  opacity: 0.9;
 }
 
 .landing-brand-mark {

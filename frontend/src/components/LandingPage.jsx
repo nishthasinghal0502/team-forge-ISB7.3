@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import "./LandingPage.css";
 
 export default function LandingPage({ onNavigate }) {
@@ -7,10 +7,8 @@ export default function LandingPage({ onNavigate }) {
       {/* Top Header Navigation */}
       <header className="landing-navbar">
         <div className="landing-nav-inner">
-          <div className="landing-brand">
-            <span className="landing-brand-mark">TF</span>
-            <span className="landing-brand-name">Team Forge</span>
-            <span className="landing-brand-tag">Idea Validator</span>
+          <div className="landing-brand" onClick={() => onNavigate("landing")} style={{ cursor: "pointer" }}>
+            <img src="/idea_validator_logo.jpg" alt="VYIBE — Validate Your Idea Before Execution" className="landing-brand-logo-img" />
           </div>
 
           <div className="landing-nav-actions">
@@ -253,9 +251,8 @@ export default function LandingPage({ onNavigate }) {
       <footer className="landing-footer">
         <div className="landing-footer-inner">
           <div className="footer-left">
-            <div className="footer-brand">
-              <span className="footer-mark">TF</span>
-              <span className="footer-title">Team Forge</span>
+            <div className="footer-brand" onClick={() => onNavigate("landing")} style={{ cursor: "pointer" }}>
+              <img src="/idea_validator_logo.jpg" alt="VYIBE" className="footer-brand-logo-img" />
             </div>
             <p className="footer-copy">
               Autonomous Startup Idea Validator & Market Intelligence Dossiers.

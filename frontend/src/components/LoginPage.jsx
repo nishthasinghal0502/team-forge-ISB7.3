@@ -121,7 +121,7 @@ export default function LoginPage({ initialMode = "login", onNavigate }) {
         </button>
 
         <div className="login-brand-logo" onClick={() => onNavigate("landing")} style={{ cursor: "pointer" }}>
-          <span>Team Forge</span>
+          <img src="/idea_validator_logo.jpg" alt="VYIBE" className="auth-logo-img" />
           <span className="login-brand-badge">AUTH</span>
         </div>
       </header>

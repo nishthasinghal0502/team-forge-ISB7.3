@@ -3,15 +3,13 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 const AuthContext = createContext(null);
 
 const API_URL = (() => {
-  const envUrl = import.meta.env.VITE_API_URL;
-  if (envUrl) return envUrl;
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    if (host.includes("vercel.app")) {
-      return "https://team-forge-backend.onrender.com";
+    if (host === "localhost" || host === "127.0.0.1") {
+      return "http://127.0.0.1:8000";
     }
   }
-  return "http://127.0.0.1:8000";
+  return import.meta.env.VITE_API_URL || "https://team-forge-backend.onrender.com";
 })();
 
 export function AuthProvider({ children }) {

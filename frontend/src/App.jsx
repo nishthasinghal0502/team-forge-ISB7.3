@@ -445,6 +445,18 @@ export default function App() {
   return (
     <div className="page">
       <div className="top-navigation-bar">
+        <div
+          className="app-brand-logo"
+          onClick={() => navigateTo("landing")}
+          style={{ cursor: "pointer", display: "flex", alignItems: "center" }}
+          title="VYIBE — Back to Home"
+        >
+          <img
+            src="/idea_validator_logo.jpg"
+            alt="VYIBE — Validate Your Idea Before Execution"
+            className="app-header-logo-img"
+          />
+        </div>
         <UserAuthHeader
           user={user}
           token={token}

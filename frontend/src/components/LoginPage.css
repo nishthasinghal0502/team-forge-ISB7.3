@@ -52,7 +52,22 @@
   color: var(--ink-primary, #111111);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+.auth-logo-img {
+  height: 38px;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  border-radius: 4px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.login-brand-logo:hover .auth-logo-img {
+  opacity: 0.9;
+  transform: scale(1.02);
 }
 
 .login-brand-badge {
