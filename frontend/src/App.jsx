@@ -42,6 +42,30 @@ const RESEARCH_STAGES = [
   { id: 6, label: "Scoping evidence-grounded MVP & go-to-market blueprint" },
 ];
 
+const SAMPLE_CONCEPTS = [
+  {
+    label: "LegalTech AI",
+    idea: "An AI-powered contract analysis platform for mid-market CFOs that detects compliance risks, auto-redlines supplier agreements, and calculates financial liabilities in real-time.",
+    productName: "LexiGuard AI",
+    industry: "LegalTech / FinTech",
+    targetAudience: "In-house general counsels and CFOs at 50-500 person enterprises",
+  },
+  {
+    label: "Fleet Telematics",
+    idea: "Predictive fleet maintenance and EV routing optimization platform that integrates directly with CAN-bus telematics to reduce fuel consumption and prevent roadside breakdowns.",
+    productName: "VoltPulse",
+    industry: "Logistics & CleanTech",
+    targetAudience: "Fleet operations managers managing 20-200 commercial vehicles",
+  },
+  {
+    label: "MedTech Denial AI",
+    idea: "Autonomous medical billing and denial management platform that appeals rejected insurance claims using insurer-specific CMS payment policies.",
+    productName: "DenialShield",
+    industry: "HealthTech / Revenue Cycle",
+    targetAudience: "Outpatient clinics and independent billing agencies",
+  },
+];
+
 export default function App() {
   const { user, token, isAuthenticated, loading, login, signup, loginWithGoogle, logout } = useAuth();
 
@@ -488,15 +512,48 @@ export default function App() {
 
       <main className="dossier">
         <form className="submission-form" onSubmit={handleSubmit}>
-          <div className="form-field main-idea-field">
-            <label htmlFor="idea" className="field-label">
-              DESCRIBE THE STARTUP CONCEPT <span className="label-required">*</span>
-            </label>
+          {/* Executive Console Header */}
+          <div className="form-console-header">
+            <div className="console-status-group">
+              <span className="live-engine-indicator" />
+              <span className="console-status-title">VENTURE DILIGENCE CONSOLE</span>
+              <span className="console-engine-tag">8-Agent Swarm Ready</span>
+            </div>
+            <div className="console-sample-chips">
+              <span className="chips-label">Try sample:</span>
+              {SAMPLE_CONCEPTS.map((sample, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  className="sample-chip-button"
+                  onClick={() => {
+                    setIdea(sample.idea);
+                    setProductName(sample.productName);
+                    setIndustry(sample.industry);
+                    setTargetAudience(sample.targetAudience);
+                  }}
+                  title="Click to load this sample concept"
+                >
+                  {sample.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Main Idea Concept Textarea */}
+          <div className="form-field-group main-concept-group">
+            <div className="field-label-wrapper">
+              <label htmlFor="idea" className="field-label-main">
+                Startup Concept & Value Proposition <span className="badge-required">Required</span>
+              </label>
+              <span className="field-helper-hint">Describe target customer pain, workflow, monetization, or key hypotheses</span>
+            </div>
             <textarea
               id="idea"
+              className="concept-textarea"
               value={idea}
               onChange={(e) => setIdea(e.target.value)}
-              placeholder="Describe your startup concept, target customer pain, core workflow, monetization mechanism, or key assumptions in detail."
+              placeholder="Describe your startup concept in detail. For example: An autonomous workflow platform that automates SOC2 compliance for seed-stage startups through continuous API telemetry and audit evidence collection..."
               rows={5}
             />
             <div className="form-meta-row">
@@ -506,13 +563,15 @@ export default function App() {
             </div>
           </div>
 
-          <div className="form-grid">
-            <div className="form-field">
-              <label htmlFor="productName" className="field-label">
-                STARTUP / PRODUCT NAME <span className="label-optional">(OPTIONAL)</span>
+          {/* Secondary Parameters Grid */}
+          <div className="parameters-grid">
+            <div className="parameter-field">
+              <label htmlFor="productName" className="field-label-param">
+                Product / Startup Name <span className="badge-optional">Optional</span>
               </label>
               <input
                 id="productName"
+                className="param-input"
                 type="text"
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
@@ -520,12 +579,13 @@ export default function App() {
               />
             </div>
 
-            <div className="form-field">
-              <label htmlFor="industry" className="field-label">
-                INDUSTRY OR VERTICAL <span className="label-optional">(OPTIONAL)</span>
+            <div className="parameter-field">
+              <label htmlFor="industry" className="field-label-param">
+                Industry / Vertical <span className="badge-optional">Optional</span>
               </label>
               <input
                 id="industry"
+                className="param-input"
                 type="text"
                 value={industry}
                 onChange={(e) => setIndustry(e.target.value)}
@@ -533,78 +593,113 @@ export default function App() {
               />
             </div>
 
-            <div className="form-field">
-              <label htmlFor="targetAudience" className="field-label">
-                TARGET CUSTOMER PROFILE <span className="label-optional">(OPTIONAL)</span>
+            <div className="parameter-field full-width">
+              <label htmlFor="targetAudience" className="field-label-param">
+                Target Customer Profile <span className="badge-optional">Optional</span>
               </label>
               <input
                 id="targetAudience"
+                className="param-input"
                 type="text"
                 value={targetAudience}
                 onChange={(e) => setTargetAudience(e.target.value)}
-                placeholder="e.g. In-house General Counsels at mid-market SaaS"
+                placeholder="e.g. In-house General Counsels and CFOs at mid-market SaaS companies (100–500 employees)"
               />
             </div>
           </div>
 
-          {/* Email Automation Feature */}
-          <div className="email-automation-card">
-            <label className="email-checkbox-label">
-              <input
-                type="checkbox"
-                checked={sendEmailNotification}
-                onChange={(e) => setSendEmailNotification(e.target.checked)}
-                className="email-checkbox"
-              />
-              <span className="email-checkbox-custom" />
-              <div className="email-checkbox-text">
-                <span className="email-checkbox-title">
-                  ⚡ Asynchronous Research & Email Delivery
-                </span>
-                <span className="email-checkbox-desc">
-                  Don't want to wait on this screen? We'll run the multi-agent validation in the background and email the full intelligence report to your Gmail automatically.
-                </span>
+          {/* Asynchronous Email Delivery Panel */}
+          <div className={`delivery-feature-panel ${sendEmailNotification ? "is-active" : ""}`}>
+            <div className="delivery-panel-header">
+              <div className="delivery-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
               </div>
-            </label>
+              <div className="delivery-info">
+                <div className="delivery-title-row">
+                  <span className="delivery-title">Asynchronous Diligence & Email PDF Report</span>
+                  <span className="delivery-pill">Automated</span>
+                </div>
+                <p className="delivery-desc">
+                  Run the complete multi-agent validation in the background. We'll compile the full research dossier and email the complete report to your inbox automatically.
+                </p>
+              </div>
+              <label className="delivery-toggle-wrap" title="Toggle background research & email report delivery">
+                <input
+                  type="checkbox"
+                  checked={sendEmailNotification}
+                  onChange={(e) => setSendEmailNotification(e.target.checked)}
+                  className="delivery-toggle-checkbox"
+                />
+                <span className="delivery-toggle-track">
+                  <span className="delivery-toggle-thumb" />
+                </span>
+              </label>
+            </div>
 
             {sendEmailNotification && (
-              <div className="email-input-wrapper">
-                <input
-                  type="email"
-                  className="email-delivery-input"
-                  placeholder="Enter your Gmail address (e.g. founder@gmail.com)"
-                  value={deliveryEmail}
-                  onChange={(e) => setDeliveryEmail(e.target.value)}
-                  required={sendEmailNotification}
-                />
-                <span className="email-delivery-hint">
-                  ✉️ You can safely navigate away or close this browser tab anytime after starting.
-                </span>
+              <div className="delivery-input-block">
+                <div className="delivery-input-group">
+                  <span className="delivery-at-icon">@</span>
+                  <input
+                    type="email"
+                    className="delivery-email-input"
+                    placeholder="Enter recipient email (e.g. founder@domain.com)"
+                    value={deliveryEmail}
+                    onChange={(e) => setDeliveryEmail(e.target.value)}
+                    required={sendEmailNotification}
+                  />
+                </div>
+                <div className="delivery-secure-notice">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                  <span>Safe background execution enabled. You can safely close this browser tab anytime after starting.</span>
+                </div>
               </div>
             )}
           </div>
 
-          <div className="form-actions">
+          {/* Form Actions */}
+          <div className="console-actions-row">
             {hasFormContent && (
               <button
                 type="button"
-                className="btn btn-secondary btn-clear"
+                className="btn-console-clear"
                 onClick={handleClearForm}
                 disabled={status === "loading" || status === "async_running"}
               >
-                Clear Form
+                Reset Inputs
               </button>
             )}
             <button
               type="submit"
-              className="btn btn-primary"
+              className="btn-console-launch"
               disabled={status === "loading" || status === "async_running" || idea.trim().length === 0}
             >
-              {status === "loading" || status === "async_running"
-                ? "Analyzing market signals…"
-                : sendEmailNotification
-                ? "Launch Async Validation & Email Report →"
-                : "Validate startup idea →"}
+              {status === "loading" || status === "async_running" ? (
+                <>
+                  <span className="btn-spinner-ring" />
+                  <span>Synthesizing Market Intelligence...</span>
+                </>
+              ) : (
+                <>
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                  </svg>
+                  <span>
+                    {sendEmailNotification
+                      ? "Launch Autonomous Validation & Email Dossier"
+                      : "Run Full Market Validation"}
+                  </span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="btn-arrow-right">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </>
+              )}
             </button>
           </div>
         </form>
