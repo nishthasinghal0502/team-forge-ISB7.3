@@ -11,8 +11,8 @@ const AGENT_STAGES = [
     tagline: "Deconstructs unstructured founder vision into core hypotheses",
     description:
       "Analyzes your raw startup pitch, extracts core value propositions, formalizes primary customer personas, and creates structured search vectors for downstream empirical investigation.",
-    tools: ["Pydantic Validation", "Concept Taxonomy", "Structured Schema Engine"],
-    metrics: "100% structured hypothesis mapping",
+    tools: ["Tavily Query Generator", "Hypothesis Extraction", "ICP Persona Modeling"],
+    metrics: "Structured Hypothesis Mapping",
     sampleOutput: {
       type: "Extracted Concept Schema",
       title: "Contract Automation for Mid-Market B2B",
@@ -383,7 +383,7 @@ export default function LandingPage({ onNavigate }) {
               <span className="address-lock">🔒</span>
               <span className="address-url">vyibe.ai/app/dossier-report</span>
             </div>
-            <div className="frame-badge">CONFIDENTIAL FOUNDER DOSSIER</div>
+            <div className="frame-badge">VENTURE INTELLIGENCE DOSSIER</div>
           </div>
 
           <div className="showcase-frame-body">
@@ -507,7 +507,6 @@ export default function LandingPage({ onNavigate }) {
             <div className="stage-output-panel">
               <div className="panel-output-header">
                 <span className="output-tag">{activeStage.sampleOutput.type}</span>
-                <span className="output-status">● AGENT ARTIFACT</span>
               </div>
               <h5 className="output-title">{activeStage.sampleOutput.title}</h5>
               <pre className="output-snippet">{activeStage.sampleOutput.content}</pre>

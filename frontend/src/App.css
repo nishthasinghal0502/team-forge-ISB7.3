@@ -215,7 +215,7 @@ input[type="text"]::placeholder {
   color: var(--ink-primary);
 }
 
-button[type="submit"] {
+.submission-form button[type="submit"] {
   background: var(--accent-amber);
   color: #12100B;
   border: 1px solid #B87F17;
@@ -230,16 +230,16 @@ button[type="submit"] {
   transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease;
 }
 
-button[type="submit"]:hover:not(:disabled) {
+.submission-form button[type="submit"]:hover:not(:disabled) {
   background: var(--accent-amber-hover);
   border-color: #9C6A0C;
 }
 
-button[type="submit"]:active:not(:disabled) {
+.submission-form button[type="submit"]:active:not(:disabled) {
   transform: scale(0.99);
 }
 
-button[type="submit"]:disabled {
+.submission-form button[type="submit"]:disabled {
   background: #D8CEB6;
   color: #6E6652;
   border-color: #C5BBA2;

@@ -106,8 +106,12 @@ export default function LoginPage({ initialMode = "login", onNavigate }) {
 
   return (
     <div className="login-page-container">
-      {/* Top Header / Navigation */}
+      {/* Top Header / Navigation: Brand Logo on Left, Back to Home on Right */}
       <header className="login-top-nav">
+        <div className="login-brand-logo" onClick={() => onNavigate("landing")} style={{ cursor: "pointer" }} title="VYIBE — Back to Home">
+          <img src="/idea_validator_logo.png" alt="VYIBE" className="auth-logo-img" />
+        </div>
+
         <button
           type="button"
           onClick={() => onNavigate("landing")}
@@ -119,26 +123,18 @@ export default function LoginPage({ initialMode = "login", onNavigate }) {
           </svg>
           <span>Back to Home</span>
         </button>
-
-        <div className="login-brand-logo" onClick={() => onNavigate("landing")} style={{ cursor: "pointer" }}>
-          <img src="/idea_validator_logo.png" alt="VYIBE" className="auth-logo-img" />
-          <span className="login-brand-badge">AUTH</span>
-        </div>
       </header>
 
-      {/* Main Glassmorphism Card */}
+      {/* Main Authentication Card */}
       <div className="login-card-wrapper">
         <div className="login-header-section">
-          <div className="login-header-tag">
-            {mode === "signup" ? "New Founder Registration" : "Confidential Founder Access"}
-          </div>
           <h1 className="login-title">
-            {mode === "signup" ? "Create your venture account" : "Sign in to Team Forge"}
+            {mode === "signup" ? "Create your venture account" : "Sign in to VYIBE"}
           </h1>
           <p className="login-subtitle">
             {mode === "signup"
-              ? "Access autonomous market research, competitor intel, and your conversational startup advisor."
-              : "Access your validated startup dossiers and conversational advisor."}
+              ? "Validate your startup idea with live competitor intelligence and empirical market research."
+              : "Access your validated research dossiers and conversational venture advisor."}
           </p>
         </div>
 
@@ -263,8 +259,16 @@ export default function LoginPage({ initialMode = "login", onNavigate }) {
               required
               autoComplete={mode === "signup" ? "new-password" : "current-password"}
             />
-            {touched.password && !isPasswordValid && (
-              <span className="auth-field-error">Password must be at least 6 characters long.</span>
+            {mode === "signup" ? (
+              <div className="password-constraint-box">
+                <span className={`constraint-item ${password.length >= 6 ? "met" : ""}`}>
+                  {password.length >= 6 ? "✓" : "○"} At least 6 characters
+                </span>
+              </div>
+            ) : (
+              touched.password && !isPasswordValid && (
+                <span className="auth-field-error">Password must be at least 6 characters long.</span>
+              )
             )}
           </div>
 
@@ -284,8 +288,12 @@ export default function LoginPage({ initialMode = "login", onNavigate }) {
                 required
                 autoComplete="new-password"
               />
-              {touched.confirmPassword && !isConfirmValid && (
-                <span className="auth-field-error">Passwords do not match.</span>
+              {confirmPassword && (
+                <div className="password-constraint-box">
+                  <span className={`constraint-item ${isConfirmValid ? "met" : "unmet"}`}>
+                    {isConfirmValid ? "✓ Passwords match" : "✕ Passwords must match"}
+                  </span>
+                </div>
               )}
             </div>
           )}
@@ -303,9 +311,9 @@ export default function LoginPage({ initialMode = "login", onNavigate }) {
                 <span>{mode === "signup" ? "Creating account..." : "Signing in..."}</span>
               </span>
             ) : mode === "signup" ? (
-              "Create Account \u2192"
+              "Create Account →"
             ) : (
-              "Sign In \u2192"
+              "Sign In →"
             )}
           </button>
         </form>
@@ -313,34 +321,32 @@ export default function LoginPage({ initialMode = "login", onNavigate }) {
         {/* Mode Switcher */}
         <div className="login-footer-meta">
           {mode === "signup" ? (
-            <p className="auth-switch-text">
+            <p>
               Already have an account?{" "}
               <button
                 type="button"
                 onClick={() => {
+                  setMode("login");
                   setErrorMessage("");
                   setSuccessMessage("");
-                  setMode("login");
-                  onNavigate("login");
                 }}
-                className="auth-switch-btn"
+                className="login-switch-btn"
                 id="btn-switch-to-login"
               >
-                Log In
+                Sign In
               </button>
             </p>
           ) : (
-            <p className="auth-switch-text">
+            <p>
               Don't have an account?{" "}
               <button
                 type="button"
                 onClick={() => {
+                  setMode("signup");
                   setErrorMessage("");
                   setSuccessMessage("");
-                  setMode("signup");
-                  onNavigate("signup");
                 }}
-                className="auth-switch-btn"
+                className="login-switch-btn"
                 id="btn-switch-to-signup"
               >
                 Sign Up
@@ -350,26 +356,39 @@ export default function LoginPage({ initialMode = "login", onNavigate }) {
         </div>
       </div>
 
-      {/* Forgot Password Modal (Stub) */}
+      {/* Forgot Password Modal */}
       {showForgotModal && (
-        <div className="auth-modal-backdrop" onClick={() => setShowForgotModal(false)}>
-          <div className="auth-modal-box" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Password Reset</h3>
-              <button type="button" onClick={() => setShowForgotModal(false)} className="close-btn">
-                ✕
+        <div className="forgot-modal-backdrop" onClick={() => setShowForgotModal(false)}>
+          <div className="forgot-modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3 className="forgot-modal-title">Reset Your Password</h3>
+            <p className="forgot-modal-desc">
+              Enter your account email address and we'll send you instructions to reset your password.
+            </p>
+            <input
+              type="email"
+              className="login-text-input"
+              placeholder="founder@venture.com"
+              defaultValue={email}
+            />
+            <div className="forgot-modal-actions">
+              <button
+                type="button"
+                className="forgot-cancel-btn"
+                onClick={() => setShowForgotModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="forgot-submit-btn"
+                onClick={() => {
+                  setShowForgotModal(false);
+                  setSuccessMessage("Password reset instructions sent if account exists.");
+                }}
+              >
+                Send Instructions
               </button>
             </div>
-            <p style={{ fontSize: "14px", color: "#555", lineHeight: "1.5", margin: "14px 0" }}>
-              Self-service password recovery is currently being connected to our automated email dispatch system. Please contact support or sign in with your registered Google account.
-            </p>
-            <button
-              type="button"
-              className="login-submit-btn"
-              onClick={() => setShowForgotModal(false)}
-            >
-              Understood
-            </button>
           </div>
         </div>
       )}

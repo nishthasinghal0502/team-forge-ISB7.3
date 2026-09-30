@@ -545,7 +545,7 @@ export default function App() {
               <span className="email-checkbox-custom" />
               <div className="email-checkbox-text">
                 <span className="email-checkbox-title">
-                  ⚡ Asynchronous Research & Gmail Delivery <span className="free-tag">100% FREE</span>
+                  ⚡ Asynchronous Research & Email Delivery
                 </span>
                 <span className="email-checkbox-desc">
                   Don't want to wait on this screen? We'll run the multi-agent validation in the background and email the full intelligence report to your Gmail automatically.

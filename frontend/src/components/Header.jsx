@@ -7,7 +7,6 @@ export default function Header() {
     <header className="masthead">
       <div className="masthead-eyebrow">
         <span className="masthead-badge">RESEARCH DOSSIER & INTELLIGENCE</span>
-        <span className="masthead-date">EDITION 2026</span>
       </div>
       <h1 className="masthead-title">
         Does your startup idea <em className="accent-word">actually</em> hold up?
