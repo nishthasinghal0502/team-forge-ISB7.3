@@ -260,7 +260,7 @@ const COMPARISON_ROWS = [
   },
 ];
 
-export default function LandingPage({ onNavigate }) {
+export default function LandingPage({ onNavigate, user, onLogout }) {
   const [selectedStage, setSelectedStage] = useState(0);
 
   const activeStage = AGENT_STAGES[selectedStage];
@@ -270,7 +270,7 @@ export default function LandingPage({ onNavigate }) {
       {/* Top Header Navigation */}
       <header className="landing-navbar">
         <div className="landing-nav-inner">
-          <div className="landing-brand" onClick={() => onNavigate("landing")} style={{ cursor: "pointer" }}>
+          <div className="landing-brand" onClick={() => onNavigate(user ? "app" : "landing")} style={{ cursor: "pointer" }} title="VYIBE">
             <img src="/idea_validator_logo.png" alt="VYIBE — Validate Your Idea Before Execution" className="landing-brand-logo-img" />
           </div>
 
@@ -281,22 +281,55 @@ export default function LandingPage({ onNavigate }) {
           </nav>
 
           <div className="landing-nav-actions">
-            <button
-              type="button"
-              className="landing-btn-secondary"
-              onClick={() => onNavigate("login")}
-              id="landing-nav-login"
-            >
-              Log In
-            </button>
-            <button
-              type="button"
-              className="landing-btn-primary"
-              onClick={() => onNavigate("signup")}
-              id="landing-nav-signup"
-            >
-              Get Started Free &rarr;
-            </button>
+            {user ? (
+              <div className="landing-nav-user-cluster">
+                <div className="landing-user-badge" title={user.email}>
+                  {user.avatar_url ? (
+                    <img src={user.avatar_url} alt={user.name || "User"} className="landing-avatar-img" />
+                  ) : (
+                    <span className="landing-avatar-fallback">{(user.name || user.email || "U")[0].toUpperCase()}</span>
+                  )}
+                  <span className="landing-user-email">{user.email}</span>
+                </div>
+                <button
+                  type="button"
+                  className="landing-btn-primary"
+                  onClick={() => onNavigate("app")}
+                  id="landing-nav-app-btn"
+                >
+                  Go to App &rarr;
+                </button>
+                {onLogout && (
+                  <button
+                    type="button"
+                    className="landing-btn-secondary"
+                    onClick={onLogout}
+                    id="landing-nav-logout-btn"
+                  >
+                    Sign Out
+                  </button>
+                )}
+              </div>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="landing-btn-secondary"
+                  onClick={() => onNavigate("login")}
+                  id="landing-nav-login"
+                >
+                  Log In
+                </button>
+                <button
+                  type="button"
+                  className="landing-btn-primary"
+                  onClick={() => onNavigate("signup")}
+                  id="landing-nav-signup"
+                >
+                  Get Started Free &rarr;
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -304,11 +337,6 @@ export default function LandingPage({ onNavigate }) {
       {/* 1. HERO SECTION */}
       <section className="landing-hero-section">
         <div className="landing-hero-content">
-          <div className="landing-badge">
-            <span className="landing-pulse-dot" />
-            <span>Autonomous Venture Intelligence</span>
-          </div>
-
           <h1 className="landing-hero-title">
             Validate Your Startup Idea in Minutes with AI Market Research
           </h1>
@@ -321,24 +349,26 @@ export default function LandingPage({ onNavigate }) {
             <button
               type="button"
               className="landing-cta-primary"
-              onClick={() => onNavigate("signup")}
+              onClick={() => onNavigate(user ? "app" : "signup")}
               id="landing-hero-start-btn"
             >
-              <span>Get Started Free</span>
+              <span>{user ? "Open Venture Validator" : "Get Started Free"}</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <polyline points="12 5 19 12 12 19" />
               </svg>
             </button>
 
-            <button
-              type="button"
-              className="landing-cta-secondary"
-              onClick={() => onNavigate("login")}
-              id="landing-hero-login-btn"
-            >
-              Log In
-            </button>
+            {!user && (
+              <button
+                type="button"
+                className="landing-cta-secondary"
+                onClick={() => onNavigate("login")}
+                id="landing-hero-login-btn"
+              >
+                Log In
+              </button>
+            )}
           </div>
 
           <div className="landing-hero-trust-row">

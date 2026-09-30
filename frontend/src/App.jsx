@@ -442,6 +442,20 @@ export default function App() {
     return <LoginPage initialMode="login" onNavigate={navigateTo} />;
   }
 
+  // 3. Authenticated Landing Page view (if founder navigated to Home)
+  if (currentRoute === "landing") {
+    return (
+      <LandingPage
+        onNavigate={navigateTo}
+        user={user}
+        onLogout={() => {
+          logout();
+          navigateTo("landing");
+        }}
+      />
+    );
+  }
+
   return (
     <div className="page">
       <div className="top-navigation-bar">

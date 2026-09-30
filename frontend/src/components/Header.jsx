@@ -5,9 +5,6 @@
 export default function Header() {
   return (
     <header className="masthead">
-      <div className="masthead-eyebrow">
-        <span className="masthead-badge">RESEARCH DOSSIER & INTELLIGENCE</span>
-      </div>
       <h1 className="masthead-title">
         Does your startup idea <em className="accent-word">actually</em> hold up?
       </h1>
