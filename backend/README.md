@@ -53,40 +53,43 @@ backend/
 
 ---
 
-## ⚡ 9-Stage Validation Pipeline
+## ⚡ 10-Stage Multi-Agent Validation Pipeline
 
 ```
 [User Input Pitch]
          │
          ▼
-[1] Idea Extraction Agent       ──> Parses problem, industry, audience, keywords
+[1] Idea Extraction Agent       ──> Parses problem, industry, audience, keywords (Groq LPU)
          │
          ▼
-[2] Autonomous Research Agent   ──> CrewAI agent selectively invokes Tavily search tools
+[2] Autonomous Research Agent   ──> CrewAI agent selectively invokes Tavily search tools (Comp, Demand, Size, News)
          │
          ▼
-[3] Data Retrieval Agent        ──> Deterministic sanitization, URL dedup, categorizes sources
+[3] Data Retrieval Agent        ──> Deterministic sanitization, URL dedup, 1,500-char context budgeting
          │
          ▼
-[4] Market Opportunity Agent    ──> TAM/SAM/SOM, CAGR, End User vs Buyer personas
+[4] Market Opportunity Agent    ──> TAM/SAM/SOM sizing, CAGR, End User vs Buyer personas
          │
          ▼
-[5] Competitor Discovery Agent  ──> Maps direct/indirect rivals, capability matrix, gaps
+[5] Competitor Discovery Agent  ──> Maps direct/indirect rivals, capability matrix, pricing tiers
          │
          ▼
-[6] White-Space Engine          ──> Triangulates Pain × Coverage Voids × Defensibility
+[6] White-Space Engine          ──> Triangulates Customer Pain × Competitor Void × Defensibility (2x2 Matrix)
          │
          ▼
-[7] SWOT & Risk Agent           ──> 4-quadrant strategic matrix + risk mitigations
+[7] SWOT & Risk Agent           ──> 4-quadrant strategic matrix + 12-month risk mitigation
          │
          ▼
-[8] MVP Scoping Agent           ──> Prioritized P0/P1/P2 feature set + v2 deferrals
+[8] MVP Scoping Agent           ──> Prioritized P0/P1/P2 feature roadmap + technical risk triage
          │
          ▼
-[9] Go-To-Market Agent          ──> Channel fit rankings, positioning, launch phases
+[9] Go-To-Market Agent          ──> Customer acquisition channels, conversion funnels, CAC strategy
          │
          ▼
-[ValidationResponse JSON]
+[10] Startup Advisor Agent      ──> Multi-turn conversational venture partner strictly grounded in active dossier
+         │
+         ▼
+[ValidationResponse / Interactive Advisor Drawer / Background Email Dispatch]
 ```
 
 ---
@@ -98,32 +101,29 @@ backend/
 3. **Honest Empty Sizing**: If verified web sources contain no quantitative market size figures, the system returns an empty list (`market_size: []`) with `confidence: null` rather than fabricating figures.
 4. **Honest Customer Demand Notice**: If 0 direct customer demand/review sources are retrieved (e.g. in pure B2B verticals), the system surfaces an explicit `[HONEST GROUNDING NOTICE]` banner indicating personas are inferentially derived from market trends and competitor voids.
 5. **Selective Search Autonomy**: The autonomous research agent selectively skips irrelevant tools (e.g. skipping consumer review searches for pure B2B semiconductor cleanroom metrology).
+6. **Cascading Model Failover**: Automatic fallback across Groq LPUs (`qwen/qwen3.8-27b` ➔ `openai/gpt-oss-120b` ➔ `openai/gpt-oss-20b` ➔ `allam-2-7b`) with exponential backoff on HTTP 429 rate limits.
 
 ---
 
-## 🔌 API Endpoints
+## 🔌 API Endpoints Reference
 
-### `POST /api/validate`
-Validates a natural language startup concept and returns a comprehensive Validation Dossier.
+### Core Validation Pipeline
+- `POST /api/validate`: Synchronous multi-agent validation pipeline. Executes all 9 research stages, stores results in SQLite, and returns composite `ValidationResponse`.
+- `POST /api/validate/async`: Non-blocking asynchronous validation. Accepts requests immediately with HTTP 202 and delegates work to `run_async_validation_pipeline` with automated HTML email dispatch.
+- `GET /api/jobs/{job_id}`: Real-time status polling for background validation runs (`queued`, `processing`, `completed`, `failed`).
+- `GET /api/user/jobs`: Returns complete historical validation dossiers for the authenticated user.
 
-**Request Payload (`IdeaSubmission`):**
-```json
-{
-  "idea": "In-situ wafer defect metrology API using high-speed multi-beam electron scanning...",
-  "product_name": "AuraSemicon",
-  "industry": "Semiconductor Manufacturing & Metrology",
-  "target_audience": "Semiconductor foundry process integration and yield engineering teams"
-}
-```
+### Interactive Startup Advisor
+- `POST /api/advisor/chat`: Multi-turn conversational venture advisor. Founders can ask follow-up questions with answers strictly bounded by the active validation dossier citations.
 
-**Response (`ValidationResponse`):**
-Returns extracted domain dossier, categorized sources, market opportunity analysis, competitor landscape, white-space map, SWOT matrix, MVP recommendation, and GTM strategy.
+### Authentication & Sessions
+- `POST /api/auth/google`: Verifies Google OAuth 2.0 credential tokens and returns a stateless HMAC-SHA256 JWT session token.
+- `POST /api/auth/email`: One-click email authentication.
+- `POST /api/auth/signup` & `POST /api/auth/login`: Email and password authentication with bcrypt salting.
 
-### `GET /api/health`
-Returns service status and API version (`{"status": "ok", "version": "2.0.0"}`).
-
-### `GET /docs`
-Interactive Swagger OpenAPI documentation.
+### Monitoring & System Status
+- `GET /api/health`: Service health check (`{"status": "ok", "version": "3.0.0"}`).
+- `GET /docs`: Interactive OpenAPI / Swagger UI test suite.
 
 ---
 

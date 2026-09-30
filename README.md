@@ -2,15 +2,27 @@
 **Project Team Forge (ISB7.3)**
 
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/downloads/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-009688.svg?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![React 19](https://img.shields.io/badge/React-19.0-61DAFB.svg?style=flat&logo=react&logoColor=black)](https://react.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688.svg?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React 18](https://img.shields.io/badge/React-18.3-61DAFB.svg?style=flat&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF.svg?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![CrewAI](https://img.shields.io/badge/CrewAI-Orchestration-FF6B6B.svg?style=flat)](https://crewai.com)
+[![CrewAI](https://img.shields.io/badge/CrewAI-1.15-FF6B6B.svg?style=flat)](https://crewai.com)
 [![Tavily Search](https://img.shields.io/badge/Tavily-Live_Search_RAG-4F46E5.svg?style=flat)](https://tavily.com)
 [![Groq LPUs](https://img.shields.io/badge/Groq-LPU_Inference-F55036.svg?style=flat)](https://groq.com)
+[![SQLite](https://img.shields.io/badge/SQLite-team__forge.db-003B57.svg?style=flat&logo=sqlite&logoColor=white)](https://sqlite.org)
+[![Vercel](https://img.shields.io/badge/Frontend-Vercel_Edge-000000.svg?style=flat&logo=vercel&logoColor=white)](https://team-forge-frontend-one.vercel.app)
+[![Render](https://img.shields.io/badge/Backend-Render_Cloud-46E3B7.svg?style=flat&logo=render&logoColor=white)](https://team-forge-backend.onrender.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](LICENSE)
 
 > **VYIBE** (*Validate Your Idea Before Execution*) is an autonomous multi-agent venture diligence engine. It transforms unvetted startup ideas, technical hypotheses, and business concepts into comprehensive, investor-grade market validation dossiers in under 60 seconds — grounded strictly in live empirical search data, not generic LLM flattery.
+
+---
+
+## 🌐 Live Deployments
+
+- **Production Frontend**: [team-forge-frontend-one.vercel.app](https://team-forge-frontend-one.vercel.app)
+- **Production Backend API**: [team-forge-backend.onrender.com](https://team-forge-backend.onrender.com)
+- **Interactive API Docs (Swagger UI)**: [team-forge-backend.onrender.com/docs](https://team-forge-backend.onrender.com/docs)
+- **API Health Check**: [team-forge-backend.onrender.com/api/health](https://team-forge-backend.onrender.com/api/health)
 
 ---
 
@@ -102,6 +114,29 @@ Over **90% of technology startups fail**, and the #1 leading cause remains **bui
 
 ---
 
+## 🛠️ Complete Technology Stack & Tooling Matrix
+
+| Layer / Domain | Technology / Tool | Version / Spec | Role in VYIBE Platform |
+| :--- | :--- | :--- | :--- |
+| **Frontend Framework** | **React** | `18.3.1` | Single-page application orchestrating the diligence console, report viewer, and advisor drawer. |
+| **Bundler & Tooling** | **Vite** | `5.4.8` | Lightning-fast development HMR and optimized production bundle compilation. |
+| **Styling & Design** | **Bespoke Vanilla CSS** | Custom Tokens | Executive research canvas (`#FAF8F5`), high-contrast typography, and `@keyframes` micro-animations. |
+| **Authentication** | **Google Identity Services** | OAuth 2.0 | One-Tap Google authentication with client-side token exchange and JWT verification. |
+| **Backend API Gateway** | **FastAPI** | `0.115.0` | High-performance asynchronous REST API framework running on Uvicorn ASGI server. |
+| **Schema Validation** | **Pydantic v2** | `2.9.2` | Strict runtime request/response contracts, data serialization, and input sanitation. |
+| **Multi-Agent Engine** | **CrewAI** | `1.15.0` | Orchestrates autonomous agent tool-calling, goal-seeking behavior, and pipeline sequencing. |
+| **Real-Time Web Search** | **Tavily AI Search API** | `0.3.0` | Autonomous multi-vector web RAG across Competitors, Market Sizing, Demand, and News. |
+| **Failover Search Engine** | **DuckDuckGo Lite** | REST Endpoint | Zero-config, zero-key deterministic fallback search if primary search is degraded. |
+| **Inference Hardware** | **Groq Cloud LPUs** | Groq SDK `0.9.0` | Custom silicon Language Processing Units delivering 500+ tokens/sec analytical inference. |
+| **Foundation LLMs** | **Qwen 3.8 27B / GPT-OSS** | Groq Model Pool | Cascading failover: `qwen/qwen3.8-27b` ➔ `openai/gpt-oss-120b` ➔ `openai/gpt-oss-20b` ➔ `allam-2-7b`. |
+| **Relational Database** | **SQLite3** | `team_forge.db` | Embedded zero-cost ACID relational store for user profiles, validation jobs, and history. |
+| **Security & Passwords** | **PyJWT & Bcrypt** | `PyJWT 2.8`, `bcrypt 4.0` | Stateless HMAC-SHA256 session tokens and salted password hashing. |
+| **Email Automation** | **Gmail TLS SMTP & Resend** | Port `587` TLS | Non-blocking background worker dispatching responsive HTML dossiers directly to inboxes. |
+| **Cloud Hosting (Web)** | **Vercel** | Edge Network | Global edge delivery, automatic SSL, and atomic zero-downtime frontend deployments. |
+| **Cloud Hosting (API)** | **Render** | Python Web Service | Managed containerized production ASGI backend deployment with automatic CORS and health checks. |
+
+---
+
 ## 📁 Repository Structure
 
 ```
@@ -109,16 +144,17 @@ team-forge/
 ├── backend/                    # FastAPI backend & multi-agent pipeline
 │   ├── agents/                 # Specialized analytical agents (Extraction, Market, SWOT, MVP, etc.)
 │   ├── crew/                   # CrewAI orchestrator, tasks, and Tavily search tools
-│   ├── database/               # SQLite connection, SQLAlchemy models, and migrations
+│   ├── data/                   # Embedded SQLite store (team_forge.db) and email templates
+│   ├── db/                     # SQLite database connection, models, and migrations
 │   ├── prompts/                # 14 Externalized Markdown prompt templates (*_system.md, *_task.md)
-│   ├── schemas/                # Pydantic data contracts for requests, responses, and validation
+│   ├── schemas/                # Pydantic v2 data contracts for requests, responses, and validation
 │   ├── scripts/                # Verification, benchmark, and regression test scripts
 │   ├── services/               # White-Space engine, LLM client, email service, and sanitizers
 │   ├── tests/                  # Pytest unit and integration test suites
 │   ├── config.py               # Environment configuration and API keys
 │   ├── main.py                 # FastAPI application routes & CORS configuration
 │   └── requirements.txt        # Python backend dependencies
-├── frontend/                   # React 19 + Vite frontend application
+├── frontend/                   # React 18 + Vite frontend application
 │   ├── public/                 # Static assets, SVG icons, and favicon manifest
 │   ├── src/
 │   │   ├── components/         # Presentation components (Console, Dossier, Advisor, Modals, etc.)
@@ -127,9 +163,12 @@ team-forge/
 │   │   ├── App.jsx             # Main application controller and routing guard
 │   │   ├── index.css           # Design tokens, typography rules, and CSS variables
 │   │   └── main.jsx            # React root mount
-│   ├── package.json            # Node.js dependencies
+│   ├── package.json            # Node.js dependencies (React 18.3.1, Vite 5.4.8)
 │   └── vite.config.js          # Vite bundler configuration
 ├── docs/                       # 14 Comprehensive technical & academic documentation files
+│   ├── images/                 # High-resolution system architecture blueprints
+│   └── *.md                    # Individual engineering chapters (SRS, AI/ML, API, Security)
+├── ARCHITECTURE.md             # Complete system architecture blueprint with embedded diagram
 ├── PRESENTATION_PPT.md         # 15-Slide Presentation Deck Outline for Claude & Slide Generators
 ├── PROJECT_EXPLANATION.md      # Deep-dive architectural and engineering explanation
 └── README.md                   # Project overview and quickstart guide (this file)
