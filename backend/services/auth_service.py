@@ -6,6 +6,7 @@ Handles Google OAuth 2.0 credential verification and JWT session tokens.
 
 import os
 import time
+import bcrypt
 from typing import Any, Dict, Optional
 import jwt
 from google.oauth2 import id_token
@@ -72,3 +73,17 @@ def verify_access_token(token: str) -> Optional[Dict[str, Any]]:
         return payload
     except Exception:
         return None
+
+
+def hash_password(password: str) -> str:
+    """Hashes a plaintext password using bcrypt with standard salt."""
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
+
+
+def check_password(password: str, hashed: str) -> bool:
+    """Verifies a plaintext password against a stored bcrypt hash."""
+    try:
+        return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
+    except Exception:
+        return False

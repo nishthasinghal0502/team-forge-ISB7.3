@@ -15,6 +15,8 @@ import MVPRecommendation from "./components/MVPRecommendation";
 import GTMStrategy from "./components/GTMStrategy";
 import StartupAdvisorChat from "./components/StartupAdvisorChat";
 import LoginPage from "./components/LoginPage";
+import LandingPage from "./components/LandingPage";
+import { useAuth } from "./context/AuthContext";
 
 // Auto-detect backend: use local server on localhost, otherwise fallback to deployed Render backend
 const API_URL =
@@ -41,20 +43,27 @@ const RESEARCH_STAGES = [
 ];
 
 export default function App() {
-  // Client-Side Route State (dashboard vs login)
+  const { user, token, isAuthenticated, loading, login, signup, loginWithGoogle, logout } = useAuth();
+
+  // Client-Side Route State (landing | login | signup | app)
   const [currentRoute, setCurrentRoute] = useState(() => {
     if (typeof window !== "undefined") {
-      const path = window.location.pathname;
-      const search = window.location.search;
-      if (path === "/login" || search.includes("page=login")) return "login";
+      const path = window.location.pathname.toLowerCase();
+      if (path === "/login") return "login";
+      if (path === "/signup") return "signup";
+      if (path === "/app" || path === "/dashboard") return "app";
+      return "landing";
     }
-    return "dashboard";
+    return "landing";
   });
 
   const navigateTo = (route) => {
     setCurrentRoute(route);
     if (typeof window !== "undefined" && window.history?.pushState) {
-      const url = route === "login" ? "/login" : "/";
+      let url = "/";
+      if (route === "login") url = "/login";
+      else if (route === "signup") url = "/signup";
+      else if (route === "app" || route === "dashboard") url = "/app";
       window.history.pushState({ route }, "", url);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -62,17 +71,32 @@ export default function App() {
 
   useEffect(() => {
     const onPopState = () => {
-      const path = window.location.pathname;
-      const search = window.location.search;
-      if (path === "/login" || search.includes("page=login")) {
-        setCurrentRoute("login");
-      } else {
-        setCurrentRoute("dashboard");
-      }
+      const path = window.location.pathname.toLowerCase();
+      if (path === "/login") setCurrentRoute("login");
+      else if (path === "/signup") setCurrentRoute("signup");
+      else if (path === "/app" || path === "/dashboard") setCurrentRoute("app");
+      else setCurrentRoute("landing");
     };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
+
+  // Route Protection & Automatic Redirection Guard
+  useEffect(() => {
+    if (loading) return; // Wait for initial session verification
+
+    if (isAuthenticated) {
+      // Already authenticated users visiting public landing, login, or signup are directed to the app
+      if (currentRoute === "landing" || currentRoute === "login" || currentRoute === "signup") {
+        navigateTo("app");
+      }
+    } else {
+      // Unauthenticated users attempting to access protected /app or /dashboard are directed to login
+      if (currentRoute === "app" || currentRoute === "dashboard") {
+        navigateTo("login");
+      }
+    }
+  }, [isAuthenticated, loading, currentRoute]);
 
   const [idea, setIdea] = useState("");
   const [productName, setProductName] = useState("");
@@ -84,28 +108,17 @@ export default function App() {
   const [activeStage, setActiveStage] = useState(1);
   const [activeSection, setActiveSection] = useState("section-overview");
 
-  // Auth State
-  const [user, setUser] = useState(() => {
-    try {
-      const saved = localStorage.getItem("teamforge_user");
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
-  const [token, setToken] = useState(() => localStorage.getItem("teamforge_token") || null);
   const [showReportsModal, setShowReportsModal] = useState(false);
 
   // Email Delivery State
   const [sendEmailNotification, setSendEmailNotification] = useState(true);
-  const [deliveryEmail, setDeliveryEmail] = useState(() => {
-    try {
-      const saved = localStorage.getItem("teamforge_user");
-      return saved ? JSON.parse(saved)?.email || "" : "";
-    } catch {
-      return "";
+  const [deliveryEmail, setDeliveryEmail] = useState(() => user?.email || "");
+
+  useEffect(() => {
+    if (user?.email) {
+      setDeliveryEmail(user.email);
     }
-  });
+  }, [user]);
   const [asyncJobInfo, setAsyncJobInfo] = useState(null);
   const [asyncElapsed, setAsyncElapsed] = useState(0);
 
@@ -147,27 +160,6 @@ export default function App() {
     }
   }, []);
 
-  // Verify auth token on initial load
-  useEffect(() => {
-    if (!token) return;
-    fetch(`${API_URL}/api/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Token expired");
-        return res.json();
-      })
-      .then((data) => {
-        if (data.user) {
-          setUser(data.user);
-          localStorage.setItem("teamforge_user", JSON.stringify(data.user));
-        }
-      })
-      .catch(() => {
-        // Expired or invalid token
-        handleLogout();
-      });
-  }, [token]);
 
   // Dynamic step progression for loading or async_running
   useEffect(() => {
@@ -291,38 +283,6 @@ export default function App() {
     }
   };
 
-  const handleLogin = async (credential) => {
-    try {
-      const res = await fetch(`${API_URL}/api/auth/google`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ credential }),
-      });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.detail || body.message || `Authentication failed (${res.status})`);
-      }
-      const data = await res.json();
-      setUser(data.user);
-      setToken(data.token);
-      localStorage.setItem("teamforge_user", JSON.stringify(data.user));
-      localStorage.setItem("teamforge_token", data.token);
-      if (data.user?.email) {
-        setDeliveryEmail(data.user.email);
-      }
-      return data.user;
-    } catch (err) {
-      console.error("Sign-in error:", err);
-      throw err;
-    }
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("teamforge_user");
-    localStorage.removeItem("teamforge_token");
-  };
 
   function handleClearForm() {
     setIdea("");
@@ -458,20 +418,28 @@ export default function App() {
   const opportunityCount = result?.white_space_analysis?.opportunities?.length || 0;
   const hasFormContent = Boolean(idea || productName || industry || targetAudience);
 
-  // Render dedicated Login Page if on /login route
-  if (currentRoute === "login") {
+  // 1. Loading state during session verification
+  if (loading) {
     return (
-      <LoginPage
-        user={user}
-        onLogin={async (credential) => {
-          const u = await handleLogin(credential);
-          navigateTo("dashboard");
-          return u;
-        }}
-        onLogout={handleLogout}
-        onBack={() => navigateTo("dashboard")}
-      />
+      <div className="auth-loading-screen">
+        <div className="auth-loading-card">
+          <div className="auth-spinner" />
+          <p className="auth-loading-text">Verifying founder session...</p>
+        </div>
+      </div>
     );
+  }
+
+  // 2. Unauthenticated Routes (Landing, Signup, or Login/Protected fallback)
+  if (!isAuthenticated) {
+    if (currentRoute === "landing") {
+      return <LandingPage onNavigate={navigateTo} />;
+    }
+    if (currentRoute === "signup") {
+      return <LoginPage initialMode="signup" onNavigate={navigateTo} />;
+    }
+    // Any other route when unauthenticated (/app, /login) safely renders LoginPage
+    return <LoginPage initialMode="login" onNavigate={navigateTo} />;
   }
 
   return (
@@ -480,8 +448,11 @@ export default function App() {
         <UserAuthHeader
           user={user}
           token={token}
-          onLogin={handleLogin}
-          onLogout={handleLogout}
+          onLogin={loginWithGoogle}
+          onLogout={() => {
+            logout();
+            navigateTo("landing");
+          }}
           onOpenReports={() => setShowReportsModal(true)}
           onNavigateToLogin={() => navigateTo("login")}
         />

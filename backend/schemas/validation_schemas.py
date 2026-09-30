@@ -270,6 +270,19 @@ class ValidationResponse(BaseModel):
 # AUTHENTICATION & ASYNC EMAIL AUTOMATION SCHEMAS
 # =============================================================================
 
+class SignupRequest(BaseModel):
+    """Request schema for email/password registration."""
+    email: str = Field(..., description="User email address")
+    password: str = Field(..., min_length=6, description="User password (minimum 6 characters)")
+    name: str = Field(..., min_length=1, description="User full name")
+
+
+class LoginRequest(BaseModel):
+    """Request schema for email/password login."""
+    email: str = Field(..., description="User email address")
+    password: str = Field(..., description="User password")
+
+
 class GoogleAuthRequest(BaseModel):
     """Request schema for Google OAuth verification."""
     credential: str = Field(..., description="Google ID Token from @react-oauth/google")
