@@ -1,7 +1,270 @@
-import React from "react";
+import React, { useState } from "react";
 import "./LandingPage.css";
 
+// 5 Orchestrated Pipeline Stages representing the Multi-Agent Crew
+const AGENT_STAGES = [
+  {
+    id: "extraction",
+    stepNumber: "01",
+    name: "Idea Extraction Agent",
+    badge: "CONCEPT DECONSTRUCTION",
+    tagline: "Deconstructs unstructured founder vision into core hypotheses",
+    description:
+      "Analyzes your raw startup pitch, extracts core value propositions, formalizes primary customer personas, and creates structured search vectors for downstream empirical investigation.",
+    tools: ["Pydantic Validation", "Concept Taxonomy", "Structured Schema Engine"],
+    metrics: "100% structured hypothesis mapping",
+    sampleOutput: {
+      type: "Extracted Concept Schema",
+      title: "Contract Automation for Mid-Market B2B",
+      content:
+        "• Core Hypothesis: Mid-market legal teams spend 60% of review time on redundant vendor redlines.\n• Primary ICP: In-house General Counsels at 200-1000 employee tech firms.\n• Monetization Mechanism: Annual tiered SaaS based on seat volume and contract throughput.",
+    },
+  },
+  {
+    id: "retrieval",
+    stepNumber: "02",
+    name: "Web Search & Data Retrieval",
+    badge: "LIVE WEB GROUNDING",
+    tagline: "Autonomous multi-vector query synthesis across live search indexes",
+    description:
+      "Executes parallel targeted search queries via Tavily across recent industry filings, tech publications, and trade reports. Filters out dead links and stale training data to extract authentic source URLs.",
+    tools: ["Tavily Live Search", "Domain Authority Filter", "URL Citation Validator"],
+    metrics: "15-25 verified live empirical sources",
+    sampleOutput: {
+      type: "Live Empirical Evidence Stream",
+      title: "Real-Time Verified Search Grounding",
+      content:
+        "[1] 'State of Contract Intelligence 2026' - lawtech.org/reports/contract-ai (Auth: 88%)\n[2] 'Enterprise SaaS Legal Sizing' - venturepulse.io/market-data (Auth: 92%)\n[3] 'Vendor Risk Review Benchmark' - enterpriseb2b.com/insights (Auth: 85%)",
+    },
+  },
+  {
+    id: "parallel_intel",
+    stepNumber: "03",
+    name: "Deep Intelligence Swarm",
+    badge: "PARALLEL AGENT CREW",
+    tagline: "Concurrent market sizing, competitor feature matrix & white-space mapping",
+    description:
+      "Four specialized agents run simultaneously: Competitor Agent scrapes rival pricing tiers and moats; Market Sizing Agent models TAM/SAM with CAGR benchmarks; White-Space Engine detects unserved voids; SWOT Agent maps defensive moats.",
+    tools: ["CrewAI Orchestrator", "Quantitative CAGR Model", "White-Space Gap Engine"],
+    metrics: "4 parallel specialized research vectors",
+    sampleOutput: {
+      type: "Synthesized Market & Competitor Findings",
+      title: "Competitive Landscape & Market Sizing",
+      content:
+        "• Direct Competitors Indexed: Ironclad, SpotDraft, Juro, Robin AI.\n• Pricing Benchmark: Incumbents charge $12k-$25k/yr enterprise minimums.\n• White-Space Gap: SMB-friendly self-serve contract triage with zero legal ops setup.\n• Market Model: TAM $24.8B (14.2% CAGR) | SAM $4.2B mid-market addressable.",
+    },
+  },
+  {
+    id: "execution",
+    stepNumber: "04",
+    name: "MVP & GTM Architect",
+    badge: "EXECUTION BLUEPRINT",
+    tagline: "Pragmatic build-vs-buy engineering and customer acquisition playbooks",
+    description:
+      "Translates research insights into actionable execution steps. Outlines the 4-week minimal viable product architecture and devises the zero-to-one go-to-market acquisition channels for your first 100 customers.",
+    tools: ["Architecture Blueprints", "Build-vs-Buy Matrix", "GTM Channel Funnel"],
+    metrics: "4-week MVP roadmap + First 100 acquisition plan",
+    sampleOutput: {
+      type: "Actionable Execution Architecture",
+      title: "4-Week Technical Blueprint & GTM Channels",
+      content:
+        "• Week 1-2: Core redline parser with PDF text extraction (Build vs Buy: Embed LangChain + Tavily).\n• Week 3-4: Founder dashboard with exportable legal review summaries.\n• Initial Wedge: Outbound cold email to Series A/B Finance & Legal directors with free audit tool.",
+    },
+  },
+  {
+    id: "synthesis",
+    stepNumber: "05",
+    name: "Interactive Advisor & PDF Dossier",
+    badge: "CONTINUOUS DILIGENCE",
+    tagline: "Conversational venture partner strictly grounded in your validated dossier",
+    description:
+      "Compiles all findings into an investor-ready executive PDF dossier, triggers optional background email delivery, and mounts a real-time conversational advisor trained on your specific citations.",
+    tools: ["ReportLab PDF Engine", "SendGrid Email Dispatch", "Citation-Grounded LLM"],
+    metrics: "Zero-hallucination interactive diligence chat",
+    sampleOutput: {
+      type: "Conversational Advisor Interaction",
+      title: "Founder Question & Grounded Response",
+      content:
+        "Founder: 'How should we price against SpotDraft?'\nAdvisor: 'SpotDraft starts at $15k/yr targeting 500+ employees. You should price at $299/mo per seat with no annual lock-in to capture the 50-200 employee segment they neglect (Source [2]).'",
+    },
+  },
+];
+
+// Expanded 8-Engine Capabilities
+const CAPABILITY_ENGINES = [
+  {
+    id: "web_grounding",
+    title: "Live Empirical Web Grounding",
+    iconColor: "#059669",
+    category: "LIVE SEARCH",
+    description:
+      "Never relies on static or hallucinated training data. Autonomous multi-vector web queries retrieve verifiable statistics with live, clickable source citations.",
+    metricBadge: "Live Indexing",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="2" y1="12" x2="22" y2="12" />
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+      </svg>
+    ),
+  },
+  {
+    id: "competitors",
+    title: "Competitor & Pricing Matrix",
+    iconColor: "#2563EB",
+    category: "BENCHMARKING",
+    description:
+      "Surfaces direct, indirect, and emerging rivals. Evaluates feature parity, pricing structures, customer review complaints, and domain authority.",
+    metricBadge: "Direct & Indirect",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+        <line x1="8" y1="21" x2="16" y2="21" />
+        <line x1="12" y1="17" x2="12" y2="21" />
+      </svg>
+    ),
+  },
+  {
+    id: "market_sizing",
+    title: "Quantitative Market Sizing (TAM/SAM)",
+    iconColor: "#D97706",
+    category: "FINANCIAL MODEL",
+    description:
+      "Combines top-down industry reports with bottom-up calculation models (Customer Count × Price Point) backed by verified compound annual growth rates (CAGR).",
+    metricBadge: "TAM / SAM / SOM",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10" />
+        <line x1="12" y1="20" x2="12" y2="4" />
+        <line x1="6" y1="20" x2="6" y2="14" />
+      </svg>
+    ),
+  },
+  {
+    id: "white_space",
+    title: "Proprietary White-Space Radar",
+    iconColor: "#7C3AED",
+    category: "OPPORTUNITY FIT",
+    description:
+      "Uncovers high-conviction underserved customer voids where existing competitors are rated poorly, overpriced, or technically rigid.",
+    metricBadge: "High-Margin Gaps",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <line x1="12" y1="3" x2="12" y2="21" />
+        <line x1="3" y1="12" x2="21" y2="12" />
+      </svg>
+    ),
+  },
+  {
+    id: "mvp_scope",
+    title: "MVP Scoping & Architecture Blueprint",
+    iconColor: "#0284C7",
+    category: "ENGINEERING",
+    description:
+      "Separates must-have pilot features from bloat. Delivers a concrete 4-week development roadmap with build-vs-buy recommendations for your tech stack.",
+    metricBadge: "4-Week Roadmap",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284C7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="12 2 2 7 12 12 22 7 12 2" />
+        <polyline points="2 17 12 22 22 17" />
+        <polyline points="2 12 12 17 22 12" />
+      </svg>
+    ),
+  },
+  {
+    id: "gtm_strategy",
+    title: "Go-To-Market & Acquisition Flywheel",
+    iconColor: "#DC2626",
+    category: "DISTRIBUTION",
+    description:
+      "Identifies your first 100 customer acquisition channels, target buyer triggers, outbound sequences, and defensible viral or enterprise distribution loops.",
+    metricBadge: "First 100 Users",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+      </svg>
+    ),
+  },
+  {
+    id: "swot_risk",
+    title: "SWOT & Execution Risk Matrix",
+    iconColor: "#EA580C",
+    category: "DEFENSIBILITY",
+    description:
+      "Evaluates core technological hurdles, unfair advantages, regulatory blockers, and competitor retaliation tactics with proactive mitigations.",
+    metricBadge: "Risk Mitigation",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EA580C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+    ),
+  },
+  {
+    id: "advisor_export",
+    title: "Conversational Partner & PDF Dossiers",
+    iconColor: "#4F46E5",
+    category: "DILIGENCE SUITE",
+    description:
+      "Chat with an AI venture partner strictly trained on your research citations. Export an investor-grade executive PDF dossier or receive it asynchronously via email.",
+    metricBadge: "PDF & Async Email",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+  },
+];
+
+// Comparison Matrix
+const COMPARISON_ROWS = [
+  {
+    dimension: "Information Freshness",
+    chatgpt: "Static training data (knowledge cutoff months or years old)",
+    vyibe: "Real-time live web indexing via Tavily across fresh industry filings & news",
+  },
+  {
+    dimension: "Empirical Citations",
+    chatgpt: "Hallucinated or dead URLs without verified domain authority",
+    vyibe: "Verified, clickable source citations with domain reliability metrics",
+  },
+  {
+    dimension: "Market Sizing (TAM/SAM)",
+    chatgpt: "Generic multi-billion estimates with zero formula or math breakdown",
+    vyibe: "Bottom-up (Customer Count × Price) & top-down models with CAGR benchmarks",
+  },
+  {
+    dimension: "Competitor Benchmarking",
+    chatgpt: "Names big legacy players; misses active pricing tiers & features",
+    vyibe: "Comprehensive direct/indirect pricing tiers, feature matrix & moat gap analysis",
+  },
+  {
+    dimension: "White-Space Discovery",
+    chatgpt: "Generic platitudes ('Build an intuitive interface and focus on CX')",
+    vyibe: "Algorithmic discovery of unaddressed customer pain points where incumbents fail",
+  },
+  {
+    dimension: "Execution Blueprint",
+    chatgpt: "Generic high-level suggestions without technical build-vs-buy specifics",
+    vyibe: "Actionable 4-week MVP feature scope, build-vs-buy matrix & first 100 GTM channels",
+  },
+  {
+    dimension: "Ongoing Diligence",
+    chatgpt: "Context window drifts, loses track of previous research details",
+    vyibe: "Conversational venture partner strictly anchored to your empirical dossier",
+  },
+  {
+    dimension: "Deliverables & Sharing",
+    chatgpt: "Manual copy-pasting unstructured text from a chat thread",
+    vyibe: "One-click investor-grade PDF dossier & async background email delivery",
+  },
+];
+
 export default function LandingPage({ onNavigate }) {
+  const [selectedStage, setSelectedStage] = useState(0);
+
+  const activeStage = AGENT_STAGES[selectedStage];
+
   return (
     <div className="landing-page-root">
       {/* Top Header Navigation */}
@@ -10,6 +273,12 @@ export default function LandingPage({ onNavigate }) {
           <div className="landing-brand" onClick={() => onNavigate("landing")} style={{ cursor: "pointer" }}>
             <img src="/idea_validator_logo.png" alt="VYIBE — Validate Your Idea Before Execution" className="landing-brand-logo-img" />
           </div>
+
+          <nav className="landing-nav-links">
+            <a href="#pipeline-section" className="nav-anchor-link">Agent Workflow</a>
+            <a href="#capabilities-section" className="nav-anchor-link">Capabilities</a>
+            <a href="#comparison-section" className="nav-anchor-link">Why VYIBE</a>
+          </nav>
 
           <div className="landing-nav-actions">
             <button
@@ -77,13 +346,19 @@ export default function LandingPage({ onNavigate }) {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
-              <span>Multi-Agent Research Pipeline</span>
+              <span>8-Agent Autonomous Swarm</span>
             </span>
             <span className="trust-item">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
-              <span>Verified Search Citations</span>
+              <span>Verified Live Search Citations</span>
+            </span>
+            <span className="trust-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <span>MVP Blueprint & GTM Roadmap</span>
             </span>
             <span className="trust-item">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -106,7 +381,7 @@ export default function LandingPage({ onNavigate }) {
             </div>
             <div className="frame-address-bar">
               <span className="address-lock">🔒</span>
-              <span className="address-url">teamforge.ai/app/dossier-report</span>
+              <span className="address-url">vyibe.ai/app/dossier-report</span>
             </div>
             <div className="frame-badge">CONFIDENTIAL FOUNDER DOSSIER</div>
           </div>
@@ -130,12 +405,12 @@ export default function LandingPage({ onNavigate }) {
               <div className="mock-stat-card highlight">
                 <div className="stat-number">18</div>
                 <div className="stat-label">Empirical Sources</div>
-                <div className="stat-desc">Across 4 research vectors</div>
+                <div className="stat-desc">Across 4 live research vectors</div>
               </div>
               <div className="mock-stat-card">
                 <div className="stat-number">6</div>
                 <div className="stat-label">Competitors</div>
-                <div className="stat-desc">Direct & substitutes indexed</div>
+                <div className="stat-desc">Direct, indirect & substitutes</div>
               </div>
               <div className="mock-stat-card">
                 <div className="stat-number">4</div>
@@ -154,17 +429,17 @@ export default function LandingPage({ onNavigate }) {
               <div className="mock-preview-col">
                 <div className="mock-section-title">EXECUTIVE MARKET SIZING</div>
                 <div className="mock-data-bar">
-                  <div className="bar-fill" style={{ width: "65%" }}>TAM $24.8B (14.2% CAGR)</div>
+                  <div className="bar-fill" style={{ width: "68%" }}>TAM $24.8B (14.2% CAGR)</div>
                 </div>
                 <p className="mock-text-line">
-                  Validated against verified trade index reports and enterprise buyer expansion rates.
+                  Validated against verified trade index reports and bottom-up expansion metrics across enterprise buyers.
                 </p>
               </div>
               <div className="mock-preview-col">
                 <div className="mock-section-title">INTERACTIVE VENTURE PARTNER</div>
                 <div className="mock-chat-bubble bot">
-                  <span className="bot-role">ADVISOR</span>
-                  <p>Based on competitor pricing gaps in the enterprise HR tier, an upfront seat-tier model yields the highest early velocity.</p>
+                  <span className="bot-role">ADVISOR (GROUNDED)</span>
+                  <p>Based on competitor pricing gaps in the enterprise tier, an upfront seat-tier model yields the highest early velocity without triggering incumbent retaliation.</p>
                 </div>
               </div>
             </div>
@@ -172,82 +447,170 @@ export default function LandingPage({ onNavigate }) {
         </div>
       </section>
 
-      {/* 3. FEATURE GRID (4 cards) */}
-      <section className="landing-features-section">
+      {/* 3. INTERACTIVE MULTI-AGENT WORKFLOW PIPELINE */}
+      <section className="landing-pipeline-section" id="pipeline-section">
         <div className="landing-section-header">
-          <span className="section-kicker">FOUR CORE RESEARCH ENGINES</span>
-          <h2 className="section-heading">Rigorous Validation Grounded in Verified Signals</h2>
+          <span className="section-kicker">ORCHESTRATED MULTI-AGENT SWARM</span>
+          <h2 className="section-heading">How 8 Autonomous Agents Validate Your Concept</h2>
           <p className="section-sub">
-            Every analysis is autonomously retrieved, language-filtered, and cross-referenced by specialized agents.
+            Single-prompt AI produces vague advice. VYIBE orchestrates an autonomous crew of specialized agents executing in rigorous sequence with live search feedback loops.
           </p>
         </div>
 
-        <div className="landing-features-grid">
-          {/* Card 1: SWOT & Risk Analysis */}
-          <div className="landing-feature-card">
-            <div className="feature-icon-box">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
-                <line x1="12" y1="22" x2="12" y2="15.5" />
-                <polyline points="22 8.5 12 15.5 2 8.5" />
-              </svg>
+        {/* Interactive Step Navigator */}
+        <div className="pipeline-stepper">
+          {AGENT_STAGES.map((stage, idx) => (
+            <button
+              key={stage.id}
+              type="button"
+              className={`pipeline-step-btn ${selectedStage === idx ? "active" : ""}`}
+              onClick={() => setSelectedStage(idx)}
+            >
+              <span className="step-num">{stage.stepNumber}</span>
+              <span className="step-label">{stage.name}</span>
+              <span className="step-pill">{stage.badge}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Active Stage Detail Inspector */}
+        <div className="stage-detail-card">
+          <div className="stage-detail-header">
+            <div className="stage-meta-left">
+              <span className="stage-badge-tag">{activeStage.badge}</span>
+              <h3 className="stage-title">{activeStage.name}</h3>
+              <p className="stage-tagline">{activeStage.tagline}</p>
             </div>
-            <h3 className="feature-title">SWOT & Risk Analysis</h3>
-            <p className="feature-desc">
-              Identifies core strengths, defensive moats, technical execution risks, and regulatory threats with pragmatic mitigation strategies before writing code.
-            </p>
-            <div className="feature-tag">AGENTIC MATRIX</div>
+            <div className="stage-meta-right">
+              <div className="stage-metric-box">
+                <span className="metric-title">TARGET CAPABILITY</span>
+                <span className="metric-val">{activeStage.metrics}</span>
+              </div>
+            </div>
           </div>
 
-          {/* Card 2: Competitor Intelligence */}
-          <div className="landing-feature-card">
-            <div className="feature-icon-box">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-                <line x1="8" y1="21" x2="16" y2="21" />
-                <line x1="12" y1="17" x2="12" y2="21" />
-              </svg>
-            </div>
-            <h3 className="feature-title">Competitor Intelligence</h3>
-            <p className="feature-desc">
-              Surfaces direct and indirect competitors across live search indexes, tracking pricing models, key feature gaps, and domain authority comparisons.
-            </p>
-            <div className="feature-tag">LIVE WEB SEARCH</div>
-          </div>
+          <div className="stage-detail-grid">
+            <div className="stage-info-panel">
+              <h4 className="panel-subheading">AGENT MISSION & ARCHITECTURE</h4>
+              <p className="panel-desc">{activeStage.description}</p>
 
-          {/* Card 3: Market Sizing & White-Space Mapping */}
-          <div className="landing-feature-card">
-            <div className="feature-icon-box">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-                <path d="M2 12h20" />
-              </svg>
+              <h4 className="panel-subheading">SPECIALIZED TOOLING STACK</h4>
+              <div className="panel-tools-row">
+                {activeStage.tools.map((tool) => (
+                  <span key={tool} className="tool-pill">
+                    ⚡ {tool}
+                  </span>
+                ))}
+              </div>
             </div>
-            <h3 className="feature-title">Market Sizing & White-Space Mapping</h3>
-            <p className="feature-desc">
-              Estimates TAM and SAM with verified CAGR forecast benchmarks while identifying underserved founder opportunities where rivals underdeliver.
-            </p>
-            <div className="feature-tag">QUANTITATIVE MODEL</div>
-          </div>
 
-          {/* Card 4: Conversational AI Advisor */}
-          <div className="landing-feature-card">
-            <div className="feature-icon-box">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
+            <div className="stage-output-panel">
+              <div className="panel-output-header">
+                <span className="output-tag">{activeStage.sampleOutput.type}</span>
+                <span className="output-status">● AGENT ARTIFACT</span>
+              </div>
+              <h5 className="output-title">{activeStage.sampleOutput.title}</h5>
+              <pre className="output-snippet">{activeStage.sampleOutput.content}</pre>
             </div>
-            <h3 className="feature-title">Conversational AI Advisor</h3>
-            <p className="feature-desc">
-              Chat with a dedicated venture partner strictly grounded in your idea's citations to interrogate unit economics, go-to-market roadmaps, and target personas.
-            </p>
-            <div className="feature-tag">STRICT ANTI-HALLUCINATION</div>
           </div>
         </div>
       </section>
 
-      {/* 4. FOOTER */}
+      {/* 4. EXPANDED 8-ENGINE CAPABILITIES GRID */}
+      <section className="landing-capabilities-section" id="capabilities-section">
+        <div className="landing-section-header">
+          <span className="section-kicker">COMPREHENSIVE VENTURE INTELLIGENCE</span>
+          <h2 className="section-heading">Eight Specialized Engines. One Investor-Grade Dossier.</h2>
+          <p className="section-sub">
+            From empirical search grounding and competitor moats to 4-week MVP engineering blueprints and customer acquisition playbooks.
+          </p>
+        </div>
+
+        <div className="landing-capabilities-grid">
+          {CAPABILITY_ENGINES.map((engine) => (
+            <div key={engine.id} className="capability-card">
+              <div className="capability-top">
+                <div className="capability-icon-box">
+                  {engine.icon}
+                </div>
+                <span className="capability-metric-badge">{engine.metricBadge}</span>
+              </div>
+              <h3 className="capability-title">{engine.title}</h3>
+              <p className="capability-desc">{engine.description}</p>
+              <div className="capability-cat">{engine.category}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. WHY VYIBE: COMPARISON MATRIX */}
+      <section className="landing-comparison-section" id="comparison-section">
+        <div className="landing-section-header">
+          <span className="section-kicker">RIGOR OVER GUESSWORK</span>
+          <h2 className="section-heading">Generic ChatGPT vs. VYIBE Multi-Agent Swarm</h2>
+          <p className="section-sub">
+            Why founders trust dedicated autonomous research pipelines over single-prompt conversational models.
+          </p>
+        </div>
+
+        <div className="comparison-table-wrapper">
+          <table className="comparison-table">
+            <thead>
+              <tr>
+                <th className="th-dimension">Evaluation Vector</th>
+                <th className="th-generic">Generic Chatbot (ChatGPT / Claude)</th>
+                <th className="th-vyibe">VYIBE Multi-Agent Platform</th>
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARISON_ROWS.map((row, idx) => (
+                <tr key={idx}>
+                  <td className="td-dimension">{row.dimension}</td>
+                  <td className="td-generic">
+                    <div className="table-cell-flex">
+                      <span className="cross-icon">✕</span>
+                      <span>{row.chatgpt}</span>
+                    </div>
+                  </td>
+                  <td className="td-vyibe">
+                    <div className="table-cell-flex">
+                      <span className="check-icon">✓</span>
+                      <span>{row.vyibe}</span>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* 6. CALL TO ACTION SECTION */}
+      <section className="landing-cta-banner">
+        <div className="cta-banner-inner">
+          <div className="cta-badge">ZERO RISK • REAL-TIME GROUNDING</div>
+          <h2 className="cta-heading">Test Your Startup Hypothesis Before Writing Code</h2>
+          <p className="cta-sub">
+            Join hundreds of founders who validate real demand, identify competitor gaps, and build defensible ventures with autonomous AI research.
+          </p>
+          <div className="cta-actions">
+            <button
+              type="button"
+              className="landing-cta-primary large"
+              onClick={() => onNavigate("signup")}
+              id="landing-cta-bottom-signup"
+            >
+              <span>Validate My Startup Idea Free</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. FOOTER */}
       <footer className="landing-footer">
         <div className="landing-footer-inner">
           <div className="footer-left">
@@ -255,7 +618,7 @@ export default function LandingPage({ onNavigate }) {
               <img src="/idea_validator_logo.png" alt="VYIBE" className="footer-brand-logo-img" />
             </div>
             <p className="footer-copy">
-              Autonomous Startup Idea Validator & Market Intelligence Dossiers.
+              Autonomous Startup Idea Validator & Market Intelligence Dossiers. Grounded in live web research, competitor pricing models, and quantitative opportunity discovery.
             </p>
           </div>
 
