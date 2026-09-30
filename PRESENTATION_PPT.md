@@ -104,8 +104,10 @@
 ### Slide 5: System Architecture & 10-Stage Pipeline
 
 - **Slide Type**: Architecture Diagram / Sequential Workflow
-- **Visual Layout**: Clean horizontal pipeline flow showing the 10 stages grouped into 4 functional phases.
+- **Visual Layout**: Clean horizontal pipeline flow showing the 10 stages grouped into 4 functional phases, referencing the high-resolution architecture diagram.
 - **Headline**: The 10-Stage Multi-Agent Orchestration Pipeline
+
+![VYIBE System Architecture Diagram](docs/images/vyibe_architecture_diagram.jpg)
 
 ```
   ┌────────────────────────────────────────────────────────────────────────┐

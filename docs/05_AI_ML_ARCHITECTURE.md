@@ -1,5 +1,7 @@
 # 05. AI / Multi-Agent Architecture
 
+![VYIBE System Architecture Diagram](images/vyibe_architecture_diagram.jpg)
+
 ## 1. Agent Ecosystem Overview
 The intelligence layer of the **Startup Idea Validator** is governed by an autonomous multi-agent pipeline implemented via **CrewAI** and **Groq Cloud LLM** inference.
 

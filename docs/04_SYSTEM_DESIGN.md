@@ -1,10 +1,12 @@
 # 04. System Design & Architectural Topology
 
+![VYIBE System Architecture Diagram](images/vyibe_architecture_diagram.jpg)
+
 ## 1. Architectural Philosophy
 The architecture is based on a **Decoupled Multi-Tier System Topology** combining:
-1. An editorial client application (React 18 SPA) deployed to edge CDN infrastructure (Vercel).
+1. An editorial client application (React 19 SPA) deployed to edge CDN infrastructure (Vercel).
 2. A high-throughput API gateway and validation controller (FastAPI / Python 3.11) deployed to containerized compute (Render Cloud).
-3. An in-process autonomous multi-agent pipeline governed by CrewAI, orchestrating interactions with external intelligence services (Groq Cloud LLM and Tavily Search API).
+3. An in-process autonomous multi-agent pipeline governed by CrewAI, orchestrating interactions with external intelligence services (Groq Cloud LPUs, Tavily Search API, Resend/Gmail SMTP).
 
 ---
 

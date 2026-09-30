@@ -32,6 +32,8 @@ Over **90% of technology startups fail**, and the #1 leading cause remains **bui
 
 ## 🏛️ System Architecture & 10-Stage Pipeline
 
+![VYIBE System Architecture Diagram](docs/images/vyibe_architecture_diagram.jpg)
+
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                   CLIENT / PRESENTATION LAYER                                          │
@@ -61,7 +63,7 @@ Over **90% of technology startups fail**, and the #1 leading cause remains **bui
               ┌─────────────────────▼───────────────┐   ┌───────────────▼──────────────────────────┐
               │   EXTERNAL RESEARCH & EMAIL LAYER   │   │     PERSISTENCE & INFERENCE LAYER        │
               ├─────────────────────────────────────┤   ├──────────────────────────────────────────┤
-              │ • Tavily AI Search (Primary RAG)    │   │ • Groq Cloud LPUs (Qwen 2.5 / Llama 3.3) │
+              │ • Tavily AI Search (Primary RAG)    │   │ • Groq Cloud LPUs (Qwen 3.8 / GPT-OSS)   │
               │ • DuckDuckGo (Fallback Search)      │   │ • SQLite DB (team_forge.db: Users & Jobs)│
               │ • Gmail TLS SMTP / Resend API       │   │ • LRU In-Memory Bounded Session Cache    │
               │ • Google Identity Services (OAuth)  │   │ • 14 Externalized Markdown Prompts       │
