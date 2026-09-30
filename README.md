@@ -1,105 +1,136 @@
-# Team Forge — Autonomous Startup Idea Validator (v3.0)
+# VYIBE — Autonomous Venture Intelligence & Market Research Swarm
+**Project Team Forge (ISB7.3)**
 
-[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-009688.svg)](https://fastapi.tiangolo.com/)
-[![React 18](https://img.shields.io/badge/React-18.3+-61DAFB.svg)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-5.4+-646CFF.svg)](https://vitejs.dev/)
-[![CrewAI](https://img.shields.io/badge/CrewAI-Orchestration-orange.svg)](https://crewai.com)
-[![Groq LPU](https://img.shields.io/badge/Groq-LPU%20Inference-f55036.svg)](https://groq.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-009688.svg?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React 19](https://img.shields.io/badge/React-19.0-61DAFB.svg?style=flat&logo=react&logoColor=black)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF.svg?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![CrewAI](https://img.shields.io/badge/CrewAI-Orchestration-FF6B6B.svg?style=flat)](https://crewai.com)
+[![Tavily Search](https://img.shields.io/badge/Tavily-Live_Search_RAG-4F46E5.svg?style=flat)](https://tavily.com)
+[![Groq LPUs](https://img.shields.io/badge/Groq-LPU_Inference-F55036.svg?style=flat)](https://groq.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](LICENSE)
 
-> **Team Forge (ISB7.3)**: An autonomous multi-agent validation engine that transforms raw, unvetted startup ideas into comprehensive, evidence-grounded venture dossiers in under 60 seconds.
+> **VYIBE** (*Validate Your Idea Before Execution*) is an autonomous multi-agent venture diligence engine. It transforms unvetted startup ideas, technical hypotheses, and business concepts into comprehensive, investor-grade market validation dossiers in under 60 seconds — grounded strictly in live empirical search data, not generic LLM flattery.
 
 ---
 
-## 📌 System Architecture & Pipeline
+## 📌 Problem Statement & Why VYIBE
 
-Team Forge v3.0 replaces superficial LLM wrappers with an **autonomous 9-stage sequential validation pipeline** combining agentic search tool-calling, deterministic mathematical scoring, and multi-quadrant strategic reasoning:
+Over **90% of technology startups fail**, and the #1 leading cause remains **building products for which there is no genuine market need** (CB Insights).
+
+| Dimension | Generic LLMs (ChatGPT / Claude) | VYIBE Multi-Agent Swarm |
+| :--- | :--- | :--- |
+| **Market Data Freshness** | Static training cutoff; blind to new entrants | Real-time live web tool-calling via Tavily across 4 search vectors |
+| **Citation Verifiability** | Fabricated links or generic domain mentions | Exact source URLs, verified dates, publication names, and snippet quotes |
+| **Competitor Discovery** | Returns famous incumbents (Google, Salesforce) | Extracts live direct/indirect rivals, seed-stage competitors, and pricing tiers |
+| **Market Sizing (TAM/SAM)** | Hallucinates plausible-sounding billions | Triangulated from analyst reports (Gartner, Grand View Research) with CAGR |
+| **Strategic Reasoning** | Generic advice ("Focus on marketing & sales") | Deterministic 2x2 White-Space matrix, SWOT roadmap, and MVP scoping |
+| **Ongoing Diligence** | Context drifts after a few chat exchanges | Conversational advisor strictly grounded in active dossier citations |
+| **Deliverables & Sharing** | Unformatted text blocks copied from a chat | One-click investor-grade PDF export and background email delivery |
+
+---
+
+## 🏛️ System Architecture & 10-Stage Pipeline
 
 ```
-┌───────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   React 18 + Vite Frontend                                        │
-│  (Editorial Light Theme • Fluid 4-Col Grid • § Jump Navigation • 12 Analytical Modules • PDF Dossier)│
-└─────────────────────────────────┬─────────────────────────────────────────────────────────────────┘
-                                  │ POST /api/validate (JSON)
-                                  ▼
-┌───────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                     FastAPI Backend Engine                                        │
-├───────────────────────────────────────────────────────────────────────────────────────────────────┤
-│  Stage 1: IdeaExtractionAgent      ── Extract structured problem, solution, ICP, revenue model   │
-│  Stage 2: MarketResearchAgent      ── Autonomous Tavily search tool-calling (Market, Comp, Demand)│
-│  Stage 3: MarketAnalysisAgent      ── TAM/SAM/SOM sizing, CAGR, drivers, and barriers             │
-│  Stage 4: CompetitorAnalysisAgent  ── Direct/indirect competitors, positioning, differentiation   │
-│  Stage 5: WhiteSpaceEngine         ── Deterministic 2x2 opportunity gap scoring                   │
-│  Stage 6: SWOTAgent                ── 4-quadrant strategic matrix synthesized from real evidence  │
-│  Stage 7: MVPAgent                 ── 3-phase product roadmap, core features & risk mitigation    │
-│  Stage 8: GTMAgent                 ── Multi-channel acquisition strategy & launch milestones      │
-│  Stage 9: ValidationReport Builder ── Schema validation, composite scoring & honest grounding     │
-└─────────────────────────────────┬─────────────────────────────────────────────────────────────────┘
-                                  │ Groq LPUs (Qwen 2.5 32B / Llama 3.3 70B)
-                                  ▼
-┌───────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                         Verified Market Intelligence & Venture Dossier                            │
-└───────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                   CLIENT / PRESENTATION LAYER                                          │
+│  React 19 + Vite SPA • Warm Editorial Research Canvas (#FAF8F5) • Responsive Executive Console         │
+│  [Google OAuth / JWT] • [1-Click Sample Loaders] • [Live Agent Stepper] • [Interactive Advisor Drawer] │
+│  [One-Click A4 PDF Dossier] • [Async Background Toggle] • [Dossier History Library]                    │
+└───────────────────────────────────┬───────────────────────────────────▲────────────────────────────────┘
+                                    │ POST /api/validate (Sync)         │ HTTP Polling /api/jobs/{id}
+                                    │ POST /api/validate/async          │ SSE / JSON Dossier Payload
+                                    │ POST /api/advisor/chat            │ JWT Session /api/auth/me
+                                    ▼                                   │
+┌───────────────────────────────────────────────────────────────────────┴────────────────────────────────┐
+│                               FASTAPI BACKEND ORCHESTRATOR & AGENT SWARM                               │
+├────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  Stage 1: IdeaExtractionAgent      ── Parse problem, core workflow, ICP, and vertical keywords         │
+│  Stage 2: MarketResearchAgent      ── Autonomous Tavily search tool-calling (Comp, Demand, Size, News) │
+│  Stage 3: DataRetrievalAgent       ── Deduplication, 1,500 char snippet budgeting & sanitization       │
+│  Stage 4: MarketAnalysisAgent      ── TAM/SAM/SOM sizing, CAGR, drivers, and user personas             │
+│  Stage 5: CompetitorAnalysisAgent  ── Direct/indirect competitors, positioning, differentiation        │
+│  Stage 6: WhiteSpaceEngine         ── Deterministic 2x2 opportunity gap & unaddressed demand matrix    │
+│  Stage 7: SWOTAgent                ── 4-quadrant strategic matrix synthesized from real evidence       │
+│  Stage 8: MVPAgent                 ── 3-phase product roadmap, feature prioritization & risk triage    │
+│  Stage 9: GTMAgent                 ── Multi-channel customer acquisition strategy & launch milestones   │
+│  Stage 10: StartupAdvisorAgent     ── Multi-turn interactive venture partner grounded in active report  │
+└───────────────────────────────────┬───────────────────────────────────┬────────────────────────────────┘
+                                    │                                   │
+              ┌─────────────────────▼───────────────┐   ┌───────────────▼──────────────────────────┐
+              │   EXTERNAL RESEARCH & EMAIL LAYER   │   │     PERSISTENCE & INFERENCE LAYER        │
+              ├─────────────────────────────────────┤   ├──────────────────────────────────────────┤
+              │ • Tavily AI Search (Primary RAG)    │   │ • Groq Cloud LPUs (Qwen 2.5 / Llama 3.3) │
+              │ • DuckDuckGo (Fallback Search)      │   │ • SQLite DB (team_forge.db: Users & Jobs)│
+              │ • Gmail TLS SMTP / Resend API       │   │ • LRU In-Memory Bounded Session Cache    │
+              │ • Google Identity Services (OAuth)  │   │ • 14 Externalized Markdown Prompts       │
+              └─────────────────────────────────────┘   └──────────────────────────────────────────┘
 ```
 
 ---
 
-## 🚀 Key Innovations & Engineering Highlights
+## 🚀 Key Engineering Innovations
 
-1. **Autonomous Tool-Calling via CrewAI**:
-   - `MarketResearchAgent` autonomously decides query syntax, evaluation criteria, and search iterations across 3 dedicated tools: `search_market_data`, `search_competitors`, and `search_customer_demand`.
-   - Built-in **Selective Autonomy**: Automatically executes consumer demand searches for B2C/hybrid concepts while bypassing irrelevant B2C queries for pure enterprise/B2B ideas.
+### 1. Executive Venture Diligence Console
+- **Interactive Sample Chips**: Pre-populates proven test scenarios (`LegalTech AI`, `Fleet Telematics`, `MedTech Denial AI`) with a single click.
+- **Multi-Parameter Calibration**: Captures startup thesis, optional product name, target industry, and specific customer persona for high-precision search filtering.
+- **Micro-Animations**: Custom cubic-bezier transitions (`cubic-bezier(0.16, 1, 0.3, 1)`), live pulsing engine indicators, and responsive input elevation.
 
-2. **Strict Anti-Hallucination & Snippet Budgeting**:
-   - Compiles raw search findings into a rich 1,500-character context budget per source, preventing premature context truncation and guaranteeing named competitors (e.g., Medisafe, MyTherapy, Livongo) are accurately extracted.
-   - Dynamic **`[HONEST GROUNDING NOTICE]`**: When web evidence returns 0 citations for a category, the system transparently renders an amber disclaimer banner rather than fabricating synthetic data.
+### 2. Autonomous Multi-Vector Tool-Calling via CrewAI
+- `MarketResearchAgent` autonomously formulates search queries across 4 distinct research vectors:
+  1. `search_competitors`: Discovers direct alternatives, indirect competitors, and legacy workflows.
+  2. `search_customer_demand`: Locates complaints, feature requests, and forum discussions (Reddit, G2, ProductHunt).
+  3. `search_market_size`: Retrieves analyst CAGR figures, TAM estimates, and market growth drivers.
+  4. `search_industry_news`: Identifies regulatory shifts, funding rounds, and recent industry headwinds.
+- **Selective Autonomy**: Automatically executes consumer demand searches for B2C/hybrid concepts while bypassing irrelevant B2C queries for pure enterprise B2B models.
 
-3. **Strategic Synthesis Layer (Milestone 3)**:
-   - **`SWOTAgent`**: Transforms empirical market and competitor signals into actionable Strengths, Weaknesses, Opportunities, and Threats.
-   - **`MVPAgent`**: Produces a disciplined 3-phase product roadmap (Phase 1 MVP, Phase 2, Phase 3) tied directly to validated market gaps.
-   - **`GTMAgent`**: Delivers a concrete go-to-market plan covering customer acquisition channels, funnel strategies, and launch milestones.
+### 3. Anti-Hallucination Grounding & Evidence Budgeting
+- **Snippet Context Budgeting**: Compiles search results into a clean 1,500-character context budget per citation, ensuring downstream agents analyze real competitor feature sets without context truncation.
+- **Honest Grounding Notice**: When live web search returns zero citations for a specific sector, the system displays an explicit amber notice rather than synthesizing fake data.
 
-4. **Externalized Prompt Architecture**:
-   - Modular prompt system (`backend/prompts/*.md`) separating system roles and task instructions with clean template interpolation via `loader.py`.
+### 4. Asynchronous Background Execution & Email Delivery
+- **Zero-Wait Diligence**: Users can launch validations asynchronously (`POST /api/validate/async`) and safely close their browser tab.
+- **Automated Delivery**: Compiles the executive dossier into responsive HTML email reports delivered directly to the founder's inbox via TLS SMTP / Resend.
+- **Live Polling**: Real-time status checks via `GET /api/jobs/{job_id}` allow seamless automatic page transitions when research completes.
 
-5. **Ultra-Low Latency Inference**:
-   - Powered by **Groq LPUs** serving open-weights foundation models (`qwen-2.5-32b` / `llama-3.3-70b-versatile`) achieving high tokens-per-second generation speeds.
+### 5. Interactive Conversational Venture Advisor
+- Built-in slide-out advisor drawer powered by `POST /api/advisor/chat`.
+- Founders can ask targeted follow-up questions ("*How should I price the Enterprise tier?*", "*What is my defensibility against Competitor X?*") with responses strictly grounded in their active dossier.
 
 ---
 
-## 📁 Repository Organization
+## 📁 Repository Structure
 
 ```
 team-forge/
 ├── backend/                    # FastAPI backend & multi-agent pipeline
-│   ├── agents/                 # 8 Specialized analytical agents (Extraction, Market, SWOT, MVP, etc.)
-│   ├── crew/                   # CrewAI orchestration layer, tasks, and Tavily search tools
-│   ├── prompts/                # Externalized Markdown prompt templates (*_system.md, *_task.md)
-│   ├── schemas/                # Pydantic data models & request/response contracts
-│   ├── scripts/                # Benchmark suites, regression scripts, and e2e tests
-│   ├── services/               # White-Space Engine, LLM service, and text sanitizers
+│   ├── agents/                 # Specialized analytical agents (Extraction, Market, SWOT, MVP, etc.)
+│   ├── crew/                   # CrewAI orchestrator, tasks, and Tavily search tools
+│   ├── database/               # SQLite connection, SQLAlchemy models, and migrations
+│   ├── prompts/                # 14 Externalized Markdown prompt templates (*_system.md, *_task.md)
+│   ├── schemas/                # Pydantic data contracts for requests, responses, and validation
+│   ├── scripts/                # Verification, benchmark, and regression test scripts
+│   ├── services/               # White-Space engine, LLM client, email service, and sanitizers
 │   ├── tests/                  # Pytest unit and integration test suites
-│   ├── config.py               # Central environment configuration
-│   ├── main.py                 # FastAPI application routes & CORS setup
-│   └── requirements.txt        # Python dependency manifest
-├── frontend/                   # React 18 + Vite frontend application
+│   ├── config.py               # Environment configuration and API keys
+│   ├── main.py                 # FastAPI application routes & CORS configuration
+│   └── requirements.txt        # Python backend dependencies
+├── frontend/                   # React 19 + Vite frontend application
+│   ├── public/                 # Static assets, SVG icons, and favicon manifest
 │   ├── src/
-│   │   ├── components/         # 12 Modular analytical presentation components
-│   │   ├── App.css             # Global editorial styling rules
-│   │   ├── App.jsx             # Core application controller & validation state
-│   │   ├── index.css           # Tailwind base rules & CSS variables
+│   │   ├── components/         # Presentation components (Console, Dossier, Advisor, Modals, etc.)
+│   │   ├── context/            # AuthContext (Google OAuth & JWT session state)
+│   │   ├── App.css             # Executive editorial styling and micro-animations
+│   │   ├── App.jsx             # Main application controller and routing guard
+│   │   ├── index.css           # Design tokens, typography rules, and CSS variables
 │   │   └── main.jsx            # React root mount
 │   ├── package.json            # Node.js dependencies
-│   ├── tailwind.config.js      # Tailwind design configuration
 │   └── vite.config.js          # Vite bundler configuration
-└── docs/                       # 14 Comprehensive technical & academic documentation files
-    ├── 01_PROJECT_OVERVIEW.md
-    ├── 04_SYSTEM_DESIGN.md
-    ├── 05_AI_ML_ARCHITECTURE.md
-    ├── 13_API_COST_ACCURACY_AND_SYSTEM_METRICS.md
-    ├── 14_AI_MODELS_ARCHITECTURE_AND_SELECTION_GUIDE.md
-    └── ... (Full suite of architecture diagrams and specs)
+├── docs/                       # 14 Comprehensive technical & academic documentation files
+├── PRESENTATION_PPT.md         # 15-Slide Presentation Deck Outline for Claude & Slide Generators
+├── PROJECT_EXPLANATION.md      # Deep-dive architectural and engineering explanation
+└── README.md                   # Project overview and quickstart guide (this file)
 ```
 
 ---
@@ -112,95 +143,95 @@ team-forge/
 - **API Keys**:
   - `GROQ_API_KEY` ([console.groq.com](https://console.groq.com))
   - `TAVILY_API_KEY` ([tavily.com](https://tavily.com))
+  - *Optional*: `GOOGLE_CLIENT_ID` for Google One-Tap authentication
+  - *Optional*: `SMTP_USERNAME` & `SMTP_PASSWORD` for automated email delivery
+
+---
 
 ### 2. Backend Setup
-```bash
-# Navigate to backend
-cd backend
 
-# Create and activate virtual environment
+```bash
+# 1. Clone the repository
+git clone https://github.com/sanjaykumar-xe/team-forge-ISB7.3.git
+cd team-forge-ISB7.3/backend
+
+# 2. Create and activate a virtual environment
 python -m venv venv
 # Windows:
 venv\Scripts\activate
 # macOS/Linux:
 source venv/bin/activate
 
-# Install dependencies
+# 3. Install dependencies
 pip install -r requirements.txt
 
-# Configure environment
+# 4. Configure environment variables
 cp .env.example .env
-# Edit .env and paste your GROQ_API_KEY and TAVILY_API_KEY
+# Edit .env and supply your GROQ_API_KEY and TAVILY_API_KEY
 
-# Launch FastAPI server
+# 5. Start the FastAPI development server
 uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
-Backend API interactive docs: `http://127.0.0.1:8000/docs`
+API Documentation will be available at `http://127.0.0.1:8000/docs`.
+
+---
 
 ### 3. Frontend Setup
+
 ```bash
-# In a separate terminal, navigate to frontend
+# 1. In a separate terminal, navigate to frontend
 cd frontend
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Start Vite development server
+# 3. Start the Vite dev server
 npm run dev
 ```
 Open your browser at `http://localhost:5173`.
 
 ---
 
-
----
-
-## ⚡ Asynchronous Validation & Email Automation ($0 Stack)
-
-Founders no longer need to wait on the browser tab while the 9-stage multi-agent pipeline synthesizes live web research:
-
-1. **Google OAuth 2.0 & Session Management**:
-   - Zero-friction Google / Gmail sign-in with 7-day signed JWT tokens.
-   - User profile and validated dossier histories stored securely in zero-config local SQLite (`backend/data/team_forge.db`).
-2. **Background Multi-Agent Execution**:
-   - Asynchronous job execution (`POST /api/validate/async`) powered by native FastAPI `BackgroundTasks`.
-   - Real-time job polling endpoint (`GET /api/jobs/{job_id}`) so active users can see instantaneous transitions to the completed dossier.
-3. **Automated Gmail Executive Delivery**:
-   - Built-in responsive HTML email generator (`backend/services/email_service.py`) delivering executive summaries, market sizing, competitor breakdowns, and direct dashboard deep links directly to the founder's inbox.
-   - 100% Free architecture: Uses standard Gmail TLS SMTP (or automatic local HTML preview storage when SMTP credentials are not configured).
-
-## 🧪 Testing & Benchmark Verification
+## 🧪 Testing & Verification
 
 ```bash
-# Run backend unit & integration tests
+# Run unit & agent integration test suite
 pytest backend/tests -v
 
-# Run smoke test
+# Run smoke test on core FastAPI endpoints
 python backend/scripts/smoke_test.py
 
-# Run agentic tool-calling verification
+# Verify CrewAI autonomous tool-calling pipeline
 python backend/scripts/run_agentic_verification.py
 
-# Run 5-idea multi-domain regression suite
+# Run 5-idea multi-domain regression benchmark
 python backend/scripts/run_5_regression_ideas.py
 
-# Run frontend production build check
+# Validate frontend production build
 cd frontend && npm run build
 ```
 
 ---
 
-## 📚 Technical Documentation Suite
+## 📊 Core API Endpoints
 
-For complete architectural specifications, UML diagrams, academic reports, and cost analyses, visit the [`docs/`](docs/) directory:
-
-| Document | Title | Focus Area |
+| Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| **`docs/01_PROJECT_OVERVIEW.md`** | Project Overview | Problem statement, value proposition, and user personas. |
-| **`docs/04_SYSTEM_DESIGN.md`** | System Design | Detailed component architecture, sequence flows, and contracts. |
-| **`docs/05_AI_ML_ARCHITECTURE.md`** | AI/ML Architecture | CrewAI agent configuration, prompt templates, and reasoning chains. |
-| **`docs/13_API_COST_ACCURACY_AND_SYSTEM_METRICS.md`** | Cost & Metrics | Token economics, Tavily search costs, latency, and grounding metrics. |
-| **`docs/14_AI_MODELS_ARCHITECTURE_AND_SELECTION_GUIDE.md`** | AI Models Guide | LLM selection matrix, Groq LPU benchmark comparisons, and prompt engineering. |
+| `POST` | `/api/validate` | Synchronous validation: executes full 10-stage pipeline and returns complete dossier. |
+| `POST` | `/api/validate/async` | Asynchronous validation: enqueues background job, returns immediately with `job_id`. |
+| `GET` | `/api/jobs/{job_id}` | Polls status of background validation (`queued`, `running`, `completed`, `failed`). |
+| `POST` | `/api/advisor/chat` | Interactive conversational query grounded in the active dossier context. |
+| `POST` | `/api/auth/google` | Verifies Google OAuth token, creates/logs in founder, issues 7-day JWT. |
+| `GET` | `/api/auth/me` | Validates session token and returns active founder profile and report history. |
+| `GET` | `/api/reports/my` | Retrieves all previously generated dossiers for the authenticated founder. |
+
+---
+
+## 📚 Supplementary Documentation
+
+- **[`PROJECT_EXPLANATION.md`](PROJECT_EXPLANATION.md)**: Exhaustive engineering explanation of every agent, prompt strategy, data model, and design decision.
+- **[`PRESENTATION_PPT.md`](PRESENTATION_PPT.md)**: 15-Slide Presentation Deck ready for Claude and slide creation tools.
+- **[`docs/`](docs/)**: Full 14-part academic and technical documentation suite.
 
 ---
 
