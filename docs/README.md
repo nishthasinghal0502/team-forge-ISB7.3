@@ -25,6 +25,7 @@ This documentation suite has been engineered for technical evaluators, mentors, 
 | **12** | [System Architecture & Diagrams Gallery](12_SYSTEM_DIAGRAMS_GALLERY.md) | Comprehensive suite of 11 architectural blueprints (Architecture, Use Case, DFD, Sequence, Multi-Agent, Deployment, ER, Component, Activity, API, and Class diagrams). |
 | **13** | [API Cost, Accuracy & System Metrics](13_API_COST_ACCURACY_AND_SYSTEM_METRICS.md) | Quantitative unit economics, Groq token costs, Tavily credit consumption, grounding accuracy, and latency benchmarks. |
 | **14** | [AI Models Architecture & Selection Guide](14_AI_MODELS_ARCHITECTURE_AND_SELECTION_GUIDE.md) | Full technical guide on all LLMs, search engines, selection rationale, Groq LPUs, and codebase integration mapping. |
+| **Appendix** | [Milestones 3 & 4 Additions Log](../MILESTONE_3_AND_4_ADDITIONS.md) | Exhaustive changelog of all agents, features, database models, auth, and styling added after Milestone 2. |
 
 ---
 

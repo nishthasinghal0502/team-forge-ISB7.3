@@ -273,6 +273,7 @@ cd frontend && npm run build
 ## 📚 Supplementary Documentation
 
 - **[`PROJECT_EXPLANATION.md`](PROJECT_EXPLANATION.md)**: Exhaustive engineering explanation of every agent, prompt strategy, data model, and design decision.
+- **[`MILESTONE_3_AND_4_ADDITIONS.md`](MILESTONE_3_AND_4_ADDITIONS.md)**: Detailed changelog & architectural log of all features and agents added after Milestone 2.
 - **[`MILESTONE_4_PROJECT_REPORT.md`](MILESTONE_4_PROJECT_REPORT.md)**: Milestone 4 & Final Capstone Project Report with comprehensive unit economics and benchmarks.
 - **[`WEBSITE_TEST_REPORT.md`](WEBSITE_TEST_REPORT.md)**: Full verification and end-to-end test report across all system components.
 - **[`PRESENTATION_PPT.md`](PRESENTATION_PPT.md)**: 15-Slide Presentation Deck ready for Claude and slide creation tools.
