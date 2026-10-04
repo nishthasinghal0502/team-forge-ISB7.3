@@ -83,6 +83,7 @@ export default function SWOTAnalysis({ data }) {
           <div className="quadrant-header">
             <span className="quadrant-letter">S</span>
             <span className="quadrant-title">STRENGTHS & MOATS</span>
+            <span className="swot-semantic-pill pill-forest">STRENGTHS / MOATS</span>
           </div>
           {renderItems(strengths, "No unique internal strengths verified from current evidence.")}
         </div>
@@ -91,6 +92,7 @@ export default function SWOTAnalysis({ data }) {
           <div className="quadrant-header">
             <span className="quadrant-letter">W</span>
             <span className="quadrant-title">VULNERABILITIES & GAPS</span>
+            <span className="swot-semantic-pill pill-rust">RISKS / THREATS</span>
           </div>
           {renderItems(weaknesses, "No acute internal vulnerabilities identified.")}
         </div>
@@ -99,6 +101,7 @@ export default function SWOTAnalysis({ data }) {
           <div className="quadrant-header">
             <span className="quadrant-letter">O</span>
             <span className="quadrant-title">MARKET OPPORTUNITIES</span>
+            <span className="swot-semantic-pill pill-forest">STRENGTHS / MOATS</span>
           </div>
           {renderItems(opportunities, "No verified expansion opportunities detected.")}
         </div>
@@ -107,6 +110,7 @@ export default function SWOTAnalysis({ data }) {
           <div className="quadrant-header">
             <span className="quadrant-letter">T</span>
             <span className="quadrant-title">EXTERNAL THREATS</span>
+            <span className="swot-semantic-pill pill-rust">RISKS / THREATS</span>
           </div>
           {renderItems(threats, "No critical external threats observed.")}
         </div>

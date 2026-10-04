@@ -242,7 +242,7 @@ export default function App() {
     };
   }, [status, asyncJobInfo]);
 
-  // Section observer for quick-jump navigation
+  // Section observer for quick-jump navigation using IntersectionObserver
   useEffect(() => {
     if (status !== "done") return;
 
@@ -260,22 +260,44 @@ export default function App() {
       "section-advisor",
     ];
 
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const offset = 180;
+    const visibleSections = new Map();
 
-      for (let i = sectionIds.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sectionIds[i]);
-        if (el && el.offsetTop - offset <= scrollY) {
-          setActiveSection(sectionIds[i]);
-          break;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            visibleSections.set(entry.target.id, entry);
+          } else {
+            visibleSections.delete(entry.target.id);
+          }
+        });
+
+        // Set a single deterministic active section (first matching section in document flow)
+        if (visibleSections.size > 0) {
+          for (const id of sectionIds) {
+            if (visibleSections.has(id)) {
+              setActiveSection(id);
+              break;
+            }
+          }
         }
+      },
+      {
+        root: null,
+        rootMargin: "-20% 0px -70% 0px",
+        threshold: 0,
       }
-    };
+    );
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [status]);
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [status, result]);
 
   // When validation completes, automatically and smoothly scroll to the Executive Overview
   useEffect(() => {
@@ -517,7 +539,6 @@ export default function App() {
             <div className="console-status-group">
               <span className="live-engine-indicator" />
               <span className="console-status-title">VENTURE DILIGENCE CONSOLE</span>
-              <span className="console-engine-tag">8-Agent Swarm Ready</span>
             </div>
             <div className="console-sample-chips">
               <span className="chips-label">Try sample:</span>

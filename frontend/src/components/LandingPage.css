@@ -177,17 +177,6 @@
 }
 
 /* 1. HERO SECTION */
-@keyframes heroFadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .landing-hero-section {
   padding: 80px 24px 52px;
   max-width: 980px;
@@ -204,7 +193,6 @@
   letter-spacing: -0.03em;
   margin: 0 auto 20px;
   max-width: 900px;
-  animation: heroFadeInUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .landing-hero-sub {
@@ -214,7 +202,6 @@
   max-width: 760px;
   margin: 0 auto 36px;
   font-weight: 400;
-  animation: heroFadeInUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
 }
 
 .landing-hero-ctas {
@@ -224,7 +211,6 @@
   gap: 14px;
   margin-bottom: 36px;
   flex-wrap: wrap;
-  animation: heroFadeInUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
 }
 
 .landing-cta-primary {
@@ -298,7 +284,6 @@
   font-size: 12.5px;
   color: #555555;
   font-weight: 500;
-  animation: heroFadeInUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.26s both;
 }
 
 .trust-item {
@@ -346,7 +331,10 @@
 
 .dot-red { background: #EF4444; }
 .dot-amber { background: #F59E0B; }
-.dot-green { background: #10B981; }
+.dot-green {
+  background: #10B981;
+  box-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+}
 
 .frame-address-bar {
   background: #1F2937;
@@ -399,19 +387,31 @@
 }
 
 .mock-pill {
+  font-family: inherit;
   font-size: 12px;
   font-weight: 500;
   color: #94A3B8;
   background: #1E293B;
+  border: 1px solid transparent;
   padding: 5px 12px;
   border-radius: 4px;
   white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mock-pill:hover {
+  color: #F8FAFC;
+  background: #334155;
+  border-color: #475569;
 }
 
 .mock-pill.active {
-  background: #D97706;
-  color: #FFFFFF;
+  background: #F59E0B;
+  color: #0F172A;
   font-weight: 700;
+  border-color: #F59E0B;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35);
 }
 
 .mock-metrics-row {
@@ -497,6 +497,7 @@
   align-items: center;
   padding-left: 10px;
   height: 100%;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .mock-text-line {
@@ -522,11 +523,23 @@
   margin-bottom: 4px;
 }
 
-.mock-chat-bubble.bot p {
+.bot-message-text {
   font-size: 11.5px;
   color: #CBD5E1;
   margin: 0;
   line-height: 1.4;
+}
+
+.bot-citation-pill {
+  display: inline-block;
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  color: #FBBF24;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-top: 10px;
 }
 
 /* 3. MULTI-AGENT WORKFLOW PIPELINE */
@@ -572,11 +585,28 @@
 }
 
 /* Pipeline Stepper */
+.pipeline-stepper-container {
+  position: relative;
+  margin-bottom: 28px;
+}
+
 .pipeline-stepper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
-  margin-bottom: 28px;
+  position: relative;
+}
+
+.pipeline-tracer-line {
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #2563EB, #60A5FA);
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 3px;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+  z-index: 2;
 }
 
 .pipeline-step-btn {
@@ -645,24 +675,12 @@
 }
 
 /* Stage Detail Card */
-@keyframes stageCardFadeIn {
-  from {
-    opacity: 0.6;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .stage-detail-card {
   background: #FFFFFF;
   border: 1px solid var(--border-line, #E2E8F0);
   border-radius: 14px;
   padding: 32px;
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
-  animation: stageCardFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .stage-detail-header {
@@ -849,13 +867,13 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   position: relative;
 }
 
 .capability-card:hover {
   border-color: #CBD5E1;
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
@@ -1166,6 +1184,42 @@
   color: #888888;
 }
 
+/* ==========================================================================
+   SCROLL REVEAL (IntersectionObserver Controlled)
+   ========================================================================== */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered capability cards inside revealed grid */
+.landing-capabilities-grid.scroll-reveal .capability-card {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.landing-capabilities-grid.scroll-reveal.revealed .capability-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.landing-capabilities-grid.scroll-reveal.revealed .capability-card:nth-child(1) { transition-delay: 0.04s; }
+.landing-capabilities-grid.scroll-reveal.revealed .capability-card:nth-child(2) { transition-delay: 0.08s; }
+.landing-capabilities-grid.scroll-reveal.revealed .capability-card:nth-child(3) { transition-delay: 0.12s; }
+.landing-capabilities-grid.scroll-reveal.revealed .capability-card:nth-child(4) { transition-delay: 0.16s; }
+.landing-capabilities-grid.scroll-reveal.revealed .capability-card:nth-child(5) { transition-delay: 0.20s; }
+.landing-capabilities-grid.scroll-reveal.revealed .capability-card:nth-child(6) { transition-delay: 0.24s; }
+.landing-capabilities-grid.scroll-reveal.revealed .capability-card:nth-child(7) { transition-delay: 0.28s; }
+.landing-capabilities-grid.scroll-reveal.revealed .capability-card:nth-child(8) { transition-delay: 0.32s; }
+
 /* Responsive Adjustments */
 @media (max-width: 900px) {
   .landing-nav-links {
@@ -1201,5 +1255,17 @@
   .landing-footer-inner {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+/* Reduced Motion Compliance */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

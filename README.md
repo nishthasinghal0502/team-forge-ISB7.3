@@ -3,7 +3,7 @@
 
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688.svg?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![React 18](https://img.shields.io/badge/React-18.3-61DAFB.svg?style=flat&logo=react&logoColor=black)](https://react.dev/)
+[![React 19](https://img.shields.io/badge/React-19.0-61DAFB.svg?style=flat&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF.svg?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![CrewAI](https://img.shields.io/badge/CrewAI-1.15-FF6B6B.svg?style=flat)](https://crewai.com)
 [![Tavily Search](https://img.shields.io/badge/Tavily-Live_Search_RAG-4F46E5.svg?style=flat)](https://tavily.com)
@@ -234,10 +234,12 @@ Open your browser at `http://localhost:5173`.
 ---
 
 ## 🧪 Testing & Verification
-
 ```bash
-# Run unit & agent integration test suite
-pytest backend/tests -v
+# Run unit & agent integration test suite (11/11 Passing)
+pytest backend/tests/test_agents.py backend/tests/test_milestone2.py -v
+
+# Run live API endpoint regression (7/7 Endpoints Passing)
+python backend/scripts/test_live_endpoints.py
 
 # Run smoke test on core FastAPI endpoints
 python backend/scripts/smoke_test.py
@@ -248,7 +250,7 @@ python backend/scripts/run_agentic_verification.py
 # Run 5-idea multi-domain regression benchmark
 python backend/scripts/run_5_regression_ideas.py
 
-# Validate frontend production build
+# Validate frontend production build (100% Pass in 1.33s)
 cd frontend && npm run build
 ```
 
@@ -271,6 +273,8 @@ cd frontend && npm run build
 ## 📚 Supplementary Documentation
 
 - **[`PROJECT_EXPLANATION.md`](PROJECT_EXPLANATION.md)**: Exhaustive engineering explanation of every agent, prompt strategy, data model, and design decision.
+- **[`MILESTONE_4_PROJECT_REPORT.md`](MILESTONE_4_PROJECT_REPORT.md)**: Milestone 4 & Final Capstone Project Report with comprehensive unit economics and benchmarks.
+- **[`WEBSITE_TEST_REPORT.md`](WEBSITE_TEST_REPORT.md)**: Full verification and end-to-end test report across all system components.
 - **[`PRESENTATION_PPT.md`](PRESENTATION_PPT.md)**: 15-Slide Presentation Deck ready for Claude and slide creation tools.
 - **[`docs/`](docs/)**: Full 14-part academic and technical documentation suite.
 

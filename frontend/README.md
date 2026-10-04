@@ -1,6 +1,6 @@
 # Frontend — Team Forge Validation Dashboard
 
-The frontend is a modern, high-performance **React 18 + Vite** single-page application built for deep interactive exploration of autonomous venture validation reports. It features an **Editorial Light Theme** with fluid responsive grids, jump-navigation, real-time pipeline status tracking, and 12 dedicated analytical modules.
+The frontend is a modern, high-performance **React 19 + Vite** single-page application built for deep interactive exploration of autonomous venture validation reports. It features an **Editorial Light Theme** with fluid responsive grids, jump-navigation, real-time pipeline status tracking, and 12 dedicated analytical modules.
 
 ---
 
@@ -8,8 +8,9 @@ The frontend is a modern, high-performance **React 18 + Vite** single-page appli
 
 - **Editorial Theme**: Clean ivory-to-slate gradient background (`#fafafa` / `#ffffff`), crisp typography (system font stack with geometric headings), refined borders (`border-slate-200`), and semantic badge coloring.
 - **Fluid Layout**: Replaced rigid container widths with full-bleed responsive layouts (`w-full px-4 md:px-8 xl:px-12`) expanding to 3 and 4 columns on wide monitors.
-- **§ Jump Navigation**: Sticky sub-header allowing one-click smooth scrolling directly to any of the analytical sections.
+- **§ Jump Navigation**: Sticky sub-header with single-section active tracking allowing one-click smooth scrolling directly to any analytical section.
 - **Honest Grounding Notice**: Real-time contextual amber alert rendering directly above personas whenever customer demand evidence yields 0 web citations, ensuring transparent reporting of market data availability.
+- **Scroll-Reveal System**: Strict `IntersectionObserver` scroll-triggered reveal with negative bottom bounds (`rootMargin: "0px 0px -100px 0px"`), preventing premature loading animations.
 
 ---
 
@@ -43,9 +44,9 @@ frontend/
 │   ├── App.css                 # Comprehensive executive styling, layout tokens & micro-animations
 │   ├── App.jsx                 # Core application controller, console state & 1-click sample loaders
 │   ├── index.css               # Design tokens, typography variables, and reset rules
-│   └── main.jsx                # React 18 root mount
+│   └── main.jsx                # React 19 root mount
 ├── index.html                  # HTML entry point with meta tags & SEO structure
-├── package.json                # React 18.3.1, @react-oauth/google, Vite 5.4.8
+├── package.json                # React 19.0.0, @react-oauth/google, Vite 5.4.21
 └── vite.config.js              # Vite bundler configuration
 ```
 

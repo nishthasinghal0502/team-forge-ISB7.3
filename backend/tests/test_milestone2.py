@@ -81,8 +81,7 @@ def test_market_opportunity_agent_fallback():
     assert result.confidence is None
     assert len(result.customer_segments) == 0
     assert len(result.growth_trends) == 0
-    assert len(result.market_size) > 0  # Preserves verified empirical market sizing from sources
-    assert "$6.2 Billion" in result.market_size[0].figure
+    assert len(result.market_size) == 0  # Enforces Honest Null-State when LLM processing error occurs
 
 
 def test_competitor_analysis_agent_fallback():
@@ -121,13 +120,10 @@ def test_competitor_analysis_agent_fallback():
     )
 
     assert isinstance(result, CompetitorAnalysisResult)
-    assert len(result.competitors) >= 2
-    for comp in result.competitors:
-        assert isinstance(comp, CompetitorRecord)
-        assert comp.classification in ["direct", "indirect", "emerging"]
-        assert comp.pricing != ""
-    assert len(result.comparison_matrix) > 0
-    assert len(result.market_gaps) > 0
+    assert result.analysis_status == "processing_error"
+    assert len(result.competitors) == 0
+    assert len(result.comparison_matrix) == 0
+    assert result.confidence is None
 
 
 def test_white_space_engine_fallback():

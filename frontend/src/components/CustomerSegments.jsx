@@ -17,7 +17,7 @@ export default function CustomerSegments({ segments = [], demandSourceCount = nu
         </div>
         <h3 className="section-headline">Granular Persona Breakdown & Buying Dynamics</h3>
         {demandSourceCount === 0 && (
-          <div className="honest-grounding-notice" style={{ marginTop: "14px", padding: "10px 14px", background: "#FEF3C7", border: "1px solid #FDE68A", borderLeft: "4px solid #D97706", borderRadius: "3px", fontSize: "12.5px", color: "#92400E", lineHeight: "1.5" }}>
+          <div className="honest-grounding-notice" style={{ marginTop: "14px", padding: "12px 16px", background: "#FBF7EE", border: "1px solid #EADFC9", borderRadius: "3px", fontSize: "13px", color: "#785412", lineHeight: "1.55" }}>
             <strong>[HONEST GROUNDING NOTICE]:</strong> 0 direct customer demand / review sources were collected for this run. The personas and pain points below are inferentially synthesized from market sizing trends and competitor coverage gaps rather than primary voice-of-customer interviews.
           </div>
         )}

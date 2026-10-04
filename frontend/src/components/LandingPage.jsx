@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./LandingPage.css";
 
 // 5 Orchestrated Pipeline Stages representing the Multi-Agent Crew
@@ -260,10 +260,147 @@ const COMPARISON_ROWS = [
   },
 ];
 
+// Interactive Mock Tabs for Terminal Simulation
+const MOCK_TABS = [
+  {
+    id: "overview",
+    label: "Overview",
+    sectionTitle: "EXECUTIVE MARKET SIZING",
+    barText: "TAM $24.8B (14.2% CAGR)",
+    barWidth: "68%",
+    summary:
+      "Validated against verified trade index reports and bottom-up expansion metrics across enterprise buyers.",
+    advisorRole: "ADVISOR (GROUNDED)",
+    advisorText:
+      "Based on competitor pricing gaps in the enterprise tier, an upfront seat-tier model yields the highest early velocity without triggering incumbent retaliation.",
+    citation: "Source [1]: lawtech.org/reports/contract-ai (Auth: 88%)",
+  },
+  {
+    id: "whitespace",
+    label: "White-Space",
+    sectionTitle: "EMPIRICAL WHITE-SPACE VOID",
+    barText: "94% Conviction Triangulation",
+    barWidth: "94%",
+    summary:
+      "Cross-referencing incumbent feature gaps detected an unserved void: lightweight automated redline triage for mid-market legal teams.",
+    advisorRole: "ADVISOR (GROUNDED)",
+    advisorText:
+      "Legacy CLM platforms ignore firms under 500 headcount due to high onboarding costs. You have a defensible 18-month wedge.",
+    citation: "Source [3]: venturepulse.io/market-data (Auth: 92%)",
+  },
+  {
+    id: "market",
+    label: "Market Sizing",
+    sectionTitle: "BOTTOM-UP SIZING ANALYSIS",
+    barText: "SAM $4.2B Addressable Wedge",
+    barWidth: "48%",
+    summary:
+      "Model benchmarks 38,000 tech mid-market organizations at $110k ACV, expanding at 14.2% CAGR through 2030.",
+    advisorRole: "ADVISOR (GROUNDED)",
+    advisorText:
+      "With $4.2B addressable market and strong macro tailwinds, capturing just 2.5% market share represents a $105M ARR business.",
+    citation: "Source [2]: enterpriseb2b.com/insights (Auth: 85%)",
+  },
+  {
+    id: "competitors",
+    label: "Competitors",
+    sectionTitle: "PRICING & MOAT DEFICIT MATRIX",
+    barText: "4 Direct Incumbents Profiled",
+    barWidth: "75%",
+    summary:
+      "Ironclad and SpotDraft start at $15k–$25k/yr enterprise minimums with rigid annual contracts and 4-week sales cycles.",
+    advisorRole: "ADVISOR (GROUNDED)",
+    advisorText:
+      "Legacy CLM vendors cannot lower floor prices below $12k/yr without cannibalizing their direct sales commission structures.",
+    citation: "Source [4]: g2.com/categories/clm-software (Auth: 94%)",
+  },
+  {
+    id: "swot",
+    label: "SWOT",
+    sectionTitle: "STRATEGIC MOATS & RISKS",
+    barText: "Top 3 Execution Risks Roadmapped",
+    barWidth: "82%",
+    summary:
+      "Core internal advantage lies in proprietary parsing pipeline; primary mitigation is automated human review trigger on clause ambiguity.",
+    advisorRole: "ADVISOR (GROUNDED)",
+    advisorText:
+      "Clause mismatch risk is mitigated via confidence scoring: redlines under 90% confidence trigger a human-in-the-loop review prompt.",
+    citation: "Source [5]: legaltech-review.io/benchmarks (Auth: 89%)",
+  },
+  {
+    id: "mvp",
+    label: "MVP Scope",
+    sectionTitle: "4-WEEK CRITICAL PATH BLUEPRINT",
+    barText: "Week 1–4 Release Architecture",
+    barWidth: "55%",
+    summary:
+      "Scraped requirements translate to a 3-feature core: PDF text extraction parser, change highlighter, and exportable legal summary.",
+    advisorRole: "ADVISOR (GROUNDED)",
+    advisorText:
+      "API processing overhead averages $0.014 per document page. At $299/mo per seat with 500 pages/mo cap, gross margins exceed 88%.",
+    citation: "Source [2]: saas-metrics.org/cloud-margins (Auth: 91%)",
+  },
+  {
+    id: "gtm",
+    label: "GTM",
+    sectionTitle: "TRACTION & CHANNEL FUNNELS",
+    barText: "3 Validated Acquisition Channels",
+    barWidth: "62%",
+    summary:
+      "Primary wedge: Outbound targeted email to Series A/B Finance & Legal leaders offering a zero-cost contract risk audit.",
+    advisorRole: "ADVISOR (GROUNDED)",
+    advisorText:
+      "By offering an instant automated contract scan instead of a sales demo, sales cycles compress from 45 days down to 8 days.",
+    citation: "Source [6]: saastr.com/zero-to-one-gtm (Auth: 93%)",
+  },
+  {
+    id: "advisor",
+    label: "Advisor",
+    sectionTitle: "INTERACTIVE VENTURE PARTNER",
+    barText: "Zero-Hallucination Diligence Chat",
+    barWidth: "90%",
+    summary:
+      "Conversational advisor strictly anchored to empirical citations extracted during this research run.",
+    advisorRole: "ADVISOR (GROUNDED)",
+    advisorText:
+      "The dossier compiles instantly into an investor-ready executive PDF complete with citations, SWOT matrices, and GTM milestones.",
+    citation: "Source [1]: vyibe.ai/docs/investor-dossiers (Auth: 99%)",
+  },
+];
+
 export default function LandingPage({ onNavigate, user, onLogout }) {
   const [selectedStage, setSelectedStage] = useState(0);
+  const [activeMockIndex, setActiveMockIndex] = useState(0);
 
   const activeStage = AGENT_STAGES[selectedStage];
+  const currentTab = MOCK_TABS[activeMockIndex] || MOCK_TABS[0];
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) return;
+
+    // Strict threshold and negative bottom margin: only triggers when user actually scrolls 100px past element boundary
+    const observerOptions = {
+      root: null,
+      rootMargin: "0px 0px -100px 0px",
+      threshold: 0.15,
+    };
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("revealed");
+          obs.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    const targets = document.querySelectorAll(".scroll-reveal");
+    targets.forEach((el) => observer.observe(el));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <div className="landing-page-root">
@@ -374,25 +511,25 @@ export default function LandingPage({ onNavigate, user, onLogout }) {
           <div className="landing-hero-trust-row">
             <span className="trust-item">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12" />
+                <polyline className="trust-polyline" points="20 6 9 17 4 12" />
               </svg>
               <span>8-Agent Autonomous Swarm</span>
             </span>
             <span className="trust-item">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12" />
+                <polyline className="trust-polyline" points="20 6 9 17 4 12" />
               </svg>
               <span>Verified Live Search Citations</span>
             </span>
             <span className="trust-item">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12" />
+                <polyline className="trust-polyline" points="20 6 9 17 4 12" />
               </svg>
               <span>MVP Blueprint & GTM Roadmap</span>
             </span>
             <span className="trust-item">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12" />
+                <polyline className="trust-polyline" points="20 6 9 17 4 12" />
               </svg>
               <span>Instant PDF & Email Dossiers</span>
             </span>
@@ -401,13 +538,13 @@ export default function LandingPage({ onNavigate, user, onLogout }) {
       </section>
 
       {/* 2. PRODUCT SHOWCASE */}
-      <section className="landing-showcase-section">
+      <section className="landing-showcase-section scroll-reveal">
         <div className="landing-showcase-frame">
           <div className="showcase-frame-header">
             <div className="frame-dots">
               <span className="dot dot-red" />
               <span className="dot dot-amber" />
-              <span className="dot dot-green" />
+              <span className="dot dot-green" title="Live Agent Engine Connected" />
             </div>
             <div className="frame-address-bar">
               <span className="address-lock">🔒</span>
@@ -417,17 +554,20 @@ export default function LandingPage({ onNavigate, user, onLogout }) {
           </div>
 
           <div className="showcase-frame-body">
-            {/* Mock Navigation Ribbon */}
+            {/* Interactive Mock Navigation Ribbon */}
             <div className="mock-quick-nav">
               <span className="mock-nav-label">✦ JUMP TO:</span>
-              <span className="mock-pill active">Overview</span>
-              <span className="mock-pill">White-Space</span>
-              <span className="mock-pill">Market Sizing</span>
-              <span className="mock-pill">Competitors</span>
-              <span className="mock-pill">SWOT</span>
-              <span className="mock-pill">MVP Scope</span>
-              <span className="mock-pill">GTM</span>
-              <span className="mock-pill">Advisor</span>
+              {MOCK_TABS.map((tab, idx) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  className={`mock-pill ${activeMockIndex === idx ? "active" : ""}`}
+                  onClick={() => setActiveMockIndex(idx)}
+                  title={`View ${tab.label} intelligence preview`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
 
             {/* Metrics Row */}
@@ -454,22 +594,23 @@ export default function LandingPage({ onNavigate, user, onLogout }) {
               </div>
             </div>
 
-            {/* Mock Content Snippet */}
+            {/* Dynamic Mock Content Preview */}
             <div className="mock-dossier-preview">
-              <div className="mock-preview-col">
-                <div className="mock-section-title">EXECUTIVE MARKET SIZING</div>
+              <div className="mock-preview-col preview-col-analysis">
+                <div className="mock-section-title">{currentTab.sectionTitle}</div>
                 <div className="mock-data-bar">
-                  <div className="bar-fill" style={{ width: "68%" }}>TAM $24.8B (14.2% CAGR)</div>
+                  <div className="bar-fill" style={{ width: currentTab.barWidth }}>
+                    {currentTab.barText}
+                  </div>
                 </div>
-                <p className="mock-text-line">
-                  Validated against verified trade index reports and bottom-up expansion metrics across enterprise buyers.
-                </p>
+                <p className="mock-text-line">{currentTab.summary}</p>
               </div>
-              <div className="mock-preview-col">
-                <div className="mock-section-title">INTERACTIVE VENTURE PARTNER</div>
+              <div className="mock-preview-col preview-col-advisor">
+                <div className="mock-section-title">{currentTab.advisorRole}</div>
                 <div className="mock-chat-bubble bot">
-                  <span className="bot-role">ADVISOR (GROUNDED)</span>
-                  <p>Based on competitor pricing gaps in the enterprise tier, an upfront seat-tier model yields the highest early velocity without triggering incumbent retaliation.</p>
+                  <span className="bot-role">CONVERSATIONAL PARTNER</span>
+                  <p className="bot-message-text">{currentTab.advisorText}</p>
+                  <span className="bot-citation-pill">{currentTab.citation}</span>
                 </div>
               </div>
             </div>
@@ -478,7 +619,7 @@ export default function LandingPage({ onNavigate, user, onLogout }) {
       </section>
 
       {/* 3. INTERACTIVE MULTI-AGENT WORKFLOW PIPELINE */}
-      <section className="landing-pipeline-section" id="pipeline-section">
+      <section className="landing-pipeline-section scroll-reveal" id="pipeline-section">
         <div className="landing-section-header">
           <span className="section-kicker">ORCHESTRATED MULTI-AGENT SWARM</span>
           <h2 className="section-heading">How 8 Autonomous Agents Validate Your Concept</h2>
@@ -488,19 +629,25 @@ export default function LandingPage({ onNavigate, user, onLogout }) {
         </div>
 
         {/* Interactive Step Navigator */}
-        <div className="pipeline-stepper">
-          {AGENT_STAGES.map((stage, idx) => (
-            <button
-              key={stage.id}
-              type="button"
-              className={`pipeline-step-btn ${selectedStage === idx ? "active" : ""}`}
-              onClick={() => setSelectedStage(idx)}
-            >
-              <span className="step-num">{stage.stepNumber}</span>
-              <span className="step-label">{stage.name}</span>
-              <span className="step-pill">{stage.badge}</span>
-            </button>
-          ))}
+        <div className="pipeline-stepper-container">
+          <div className="pipeline-stepper">
+            <div
+              className="pipeline-tracer-line"
+              style={{ width: `${((selectedStage + 1) / AGENT_STAGES.length) * 100}%` }}
+            />
+            {AGENT_STAGES.map((stage, idx) => (
+              <button
+                key={stage.id}
+                type="button"
+                className={`pipeline-step-btn ${selectedStage === idx ? "active" : ""}`}
+                onClick={() => setSelectedStage(idx)}
+              >
+                <span className="step-num">{stage.stepNumber}</span>
+                <span className="step-label">{stage.name}</span>
+                <span className="step-pill">{stage.badge}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Active Stage Detail Inspector */}
@@ -555,7 +702,7 @@ export default function LandingPage({ onNavigate, user, onLogout }) {
           </p>
         </div>
 
-        <div className="landing-capabilities-grid">
+        <div className="landing-capabilities-grid scroll-reveal">
           {CAPABILITY_ENGINES.map((engine) => (
             <div key={engine.id} className="capability-card">
               <div className="capability-top">
@@ -573,7 +720,7 @@ export default function LandingPage({ onNavigate, user, onLogout }) {
       </section>
 
       {/* 5. WHY VYIBE: COMPARISON MATRIX */}
-      <section className="landing-comparison-section" id="comparison-section">
+      <section className="landing-comparison-section scroll-reveal" id="comparison-section">
         <div className="landing-section-header">
           <span className="section-kicker">RIGOR OVER GUESSWORK</span>
           <h2 className="section-heading">Generic ChatGPT vs. VYIBE Multi-Agent Swarm</h2>
@@ -615,7 +762,7 @@ export default function LandingPage({ onNavigate, user, onLogout }) {
       </section>
 
       {/* 6. CALL TO ACTION SECTION */}
-      <section className="landing-cta-banner">
+      <section className="landing-cta-banner scroll-reveal">
         <div className="cta-banner-inner">
           <div className="cta-badge">ZERO RISK • REAL-TIME GROUNDING</div>
           <h2 className="cta-heading">Test Your Startup Hypothesis Before Writing Code</h2>

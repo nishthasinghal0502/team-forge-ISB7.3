@@ -6,7 +6,7 @@ export default function Header() {
   return (
     <header className="masthead">
       <h1 className="masthead-title">
-        Does your startup idea <em className="accent-word">actually</em> hold up?
+        Does your <span className="accent-word">startup idea</span> actually hold up?
       </h1>
       <p className="masthead-sub">
         Validate your concept with real-time empirical market research. Discover live competitor voids,

@@ -18,7 +18,7 @@ export default function StartupAdvisorChat({ ideaId, currentView, apiUrl }) {
     {
       role: "advisor",
       content:
-        "Welcome! I am your Conversational Startup Advisor. Ask me any follow-up question regarding the market sizing, competitor positioning, MVP roadmap, or strategic risks discovered for this idea.",
+        "Dossier Query Console: Inquire on defensibility moats, competitor pricing anomalies, or specific risk vectors grounded in this run.",
       grounded_in: ["validation_dossier"],
     },
   ]);
@@ -195,23 +195,23 @@ export default function StartupAdvisorChat({ ideaId, currentView, apiUrl }) {
               <button
                 type="button"
                 className="suggestion-chip"
-                onClick={() => handleSend("Tell me more about this section and key findings")}
+                onClick={() => handleSend("Simulate incumbent retaliation")}
               >
-                "Tell me more about this"
+                "Simulate incumbent retaliation"
               </button>
               <button
                 type="button"
                 className="suggestion-chip"
-                onClick={() => handleSend("What is the biggest operational or market risk?")}
+                onClick={() => handleSend("Detail pilot unit economics")}
               >
-                "What is the biggest risk?"
+                "Detail pilot unit economics"
               </button>
               <button
                 type="button"
                 className="suggestion-chip"
-                onClick={() => handleSend("What are the most promising market gaps to exploit?")}
+                onClick={() => handleSend("Analyze automated rollback risks")}
               >
-                "Where is the white space?"
+                "Analyze automated rollback risks"
               </button>
             </div>
 

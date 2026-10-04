@@ -1,12 +1,25 @@
 import { useState } from "react";
 
 /**
+ * Strip scraper navigation debris, localization strings, and marketing boilerplate before display.
+ */
+export function cleanSnippet(text) {
+  if (!text || typeof text !== "string") return "";
+  return text
+    .replace(/(English|Deutsch|Español|Français|Italiano|日本語|한국어|中文)/gi, "")
+    .replace(/call us|download free pdf|skip to content|read more/gi, "")
+    .replace(/\+?\d[\d -]{8,}\d/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+/**
  * Clean markdown symbols, table artifacts, and format raw snippet text.
  */
 function cleanSnippetText(raw = "") {
   if (!raw || typeof raw !== "string") return "";
 
-  let text = raw;
+  let text = cleanSnippet(raw);
 
   // 1. Remove markdown links [text](url) -> text
   text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
@@ -25,11 +38,11 @@ function cleanSnippetText(raw = "") {
   text = text.replace(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, "$1");
   text = text.replace(/[*_]/g, "");
 
-  // 5. Collapse consecutive whitespace, newlines, and tabs into single space
-  text = text.replace(/\s+/g, " ").trim();
-
-  // 6. Clean leading/trailing artifacts
+  // 5. Clean leading/trailing artifacts
   text = text.replace(/^[-:;,|•]+\s*/, "").replace(/[-:;,|•]+\s*$/, "");
+
+  // 6. Run cleanSnippet again to guarantee all debris is stripped
+  text = cleanSnippet(text);
 
   return text;
 }

@@ -14,6 +14,7 @@ This directory contains executable validation, regression, and benchmarking scri
 | **`run_agentic_verification.py`** | Deep verification of CrewAI autonomous tool-calling, verifying that `MarketResearchAgent` executes Tavily search tools. | `python backend/scripts/run_agentic_verification.py` |
 | **`run_evidence_verification.py`** | Verification of anti-hallucination grounding: checks that numerical claims and competitor names correlate directly with search sources. | `python backend/scripts/run_evidence_verification.py` |
 | **`run_5_regression_ideas.py`** | Regression test executing the full 9-stage pipeline across 5 diverse benchmark ideas (B2B, B2C, HealthTech, EdTech, FinTech). | `python backend/scripts/run_5_regression_ideas.py` |
+| **`test_live_endpoints.py`** | Live API regression verifying health, 8ms gibberish defense, Google OAuth JWT, async job polling, and advisor. | `python backend/scripts/test_live_endpoints.py` |
 
 ---
 

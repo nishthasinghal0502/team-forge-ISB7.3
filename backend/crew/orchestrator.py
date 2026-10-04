@@ -80,9 +80,9 @@ class ValidationCrewOrchestrator:
 
         _log("=== Starting Team Forge Startup Validation Pipeline (Milestone 3) ===")
 
-        # Fast heuristic check for non-idea input
-        if len(idea_text.split()) < 3 and not product_name and not industry:
-            _log("  Input contains too few words (< 3). Returning graceful empty response.")
+        # Fast heuristic check for non-idea input or gibberish
+        if (len(idea_text.split()) < 3 or not self.web_searcher.is_valid_idea(idea_text)) and not product_name and not industry:
+            _log("  Input contains too few words or unrecognized English gibberish. Returning graceful empty response.")
             return ValidationResponse(
                 idea=idea_text,
                 extracted_data={

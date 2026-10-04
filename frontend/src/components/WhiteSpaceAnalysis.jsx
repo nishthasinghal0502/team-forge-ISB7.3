@@ -82,8 +82,19 @@ export default function WhiteSpaceAnalysis({ data }) {
       {/* Opportunity Cards List */}
       <div className="whitespace-cards-list">
         {opportunities.map((opp, idx) => {
-          const hasConfidence = typeof opp.confidence === "number" && !isNaN(opp.confidence);
-          const confidencePct = hasConfidence ? Math.round(opp.confidence * 100) : null;
+          let convictionTag = "HIGH CONVICTION";
+          if (typeof opp.confidence === "number" && !isNaN(opp.confidence)) {
+            const normVal = opp.confidence <= 1 ? opp.confidence * 100 : opp.confidence;
+            convictionTag = normVal >= 75 ? "HIGH CONVICTION" : "MEDIUM CONVICTION";
+          } else if (typeof opp.confidence === "string") {
+            convictionTag = opp.confidence.toLowerCase().includes("med")
+              ? "MEDIUM CONVICTION"
+              : "HIGH CONVICTION";
+          } else if (opp.evidence_strength) {
+            convictionTag = opp.evidence_strength.toLowerCase() === "high"
+              ? "HIGH CONVICTION"
+              : "MEDIUM CONVICTION";
+          }
           const strengthLower = (opp.evidence_strength || "low").toLowerCase();
 
           return (
@@ -99,7 +110,7 @@ export default function WhiteSpaceAnalysis({ data }) {
                     Evidence: {opp.evidence_strength || "Low"}
                   </span>
                   <span className="confidence-meter-badge">
-                    {hasConfidence ? `${confidencePct}% Conviction` : "Preliminary Hypothesis"}
+                    {convictionTag}
                   </span>
                 </div>
               </div>

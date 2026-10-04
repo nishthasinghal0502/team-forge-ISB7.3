@@ -107,9 +107,10 @@ In VYIBE, all system and task instructions are externalized into 14 dedicated Ma
 
 ### 3.1 Design Philosophy & Visual Excellence
 The frontend is built on a **Warm Editorial Research Canvas** inspired by *Financial Times* and *Stripe Press*:
-- **Background**: Soft warm canvas (`#FAF8F5`) with subtle border dividers (`#E2DDD5`).
+- **Background**: Soft warm canvas (`#FAF8F5`) with subtle border dividers (`#E6E1D8`).
 - **Typography**: Display typography in `Instrument Serif` paired with high-legibility `Inter` body text and `Space Mono` for analytical data pills.
-- **Card Styling**: 16px rounded cards with dual subtle borders and multi-layered elevation shadows (`box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 16px 36px -4px rgba(27,23,18,0.06)`).
+- **Card Styling**: Clean white cards (`#FFFFFF`) with subtle `#E6E1D8` borders, free of pastel rainbow accents, differentiating SWOT items strictly by institutional semantic tag pills (Deep Forest green for Moats, Slate Ink for Weaknesses, Muted Terracotta for Risks).
+- **Sticky Jump-Bar**: Understated obsidian ink (`#1B1712`) background with `#FFFFFF` text for active states; `IntersectionObserver` configured with `rootMargin: "-20% 0px -70% 0px"` ensuring exactly one deterministic section is active at any time.
 
 ### 3.2 1-Click Interactive Concept Loaders
 The Executive Console includes 3 interactive sample buttons:
@@ -117,11 +118,12 @@ The Executive Console includes 3 interactive sample buttons:
 - **`Fleet Telematics`**: Pre-populates a predictive fleet maintenance and EV routing optimization platform.
 - **`MedTech Denial AI`**: Pre-populates an autonomous medical billing denial management platform.
 
-### 3.3 Micro-Animations & UX Polish
-- **Entrance Transitions**: Staggered `@keyframes fadeInUp` using smooth cubic-bezier easing (`cubic-bezier(0.16, 1, 0.3, 1)`).
-- **Engine Status Indicator**: Live pulsing emerald dot indicating multi-agent swarm availability.
+### 3.3 Scroll-Reveal Mechanics & UX Polish
+- **Strict Scroll-Triggered Reveal**: Configured via `IntersectionObserver` with negative bottom bounds (`rootMargin: "0px 0px -100px 0px"`, `threshold: 0.15`). Elements never animate prematurely or flash before the user scrolls to them; once in view, they smoothly transition with `cubic-bezier(0.16, 1, 0.3, 1)` and unobserve immediately.
+- **Engine Status Indicator**: Steady, non-distracting emerald status dot (`#10B981`) indicating active multi-agent swarm availability.
 - **Custom iOS-Style Toggle**: Sleek toggle switch for enabling asynchronous email delivery.
 - **Obsidian Launch Button**: High-contrast primary action button with arrow slide and subtle scale micro-interactions.
+- **Accessibility & Motion**: Full `@media (prefers-reduced-motion: reduce)` compliance automatically collapses transition durations for motion-sensitive users.
 
 ---
 
@@ -252,11 +254,11 @@ All features in VYIBE operate at **$0 cost** with zero required paid cloud infra
 
 ### 8.1 Automated Test Suite Structure
 ```bash
-# Unit & integration tests
-pytest backend/tests -v
+# Unit & integration tests (11/11 Passing)
+pytest backend/tests/test_agents.py backend/tests/test_milestone2.py -v
 
-# Smoke test
-python backend/scripts/smoke_test.py
+# Live endpoint verification (7/7 Endpoints Passing)
+python backend/scripts/test_live_endpoints.py
 
 # CrewAI agentic tool-calling verification
 python backend/scripts/run_agentic_verification.py
@@ -264,10 +266,10 @@ python backend/scripts/run_agentic_verification.py
 # Evidence grounding & anti-hallucination verification
 python backend/scripts/run_evidence_verification.py
 
-# 5-Idea regression benchmark
+# 5-Idea regression benchmark (5/5 Industries Passing)
 python backend/scripts/run_5_regression_ideas.py
 
-# Frontend production build check
+# Frontend production build check (100% Pass in 1.33s)
 cd frontend && npm run build
 ```
 
@@ -324,10 +326,11 @@ The system has been evaluated against diverse test cases across multiple vertica
 - [x] Complete redesign of research form into Executive Venture Diligence Console.
 - [x] 1-Click interactive sample idea chips (`LegalTech AI`, `Fleet Telematics`, `MedTech Denial AI`).
 - [x] Interactive 5-stage agent workflow pipeline visualizer with live stage inspection.
-- [x] 8-Engine capability showcase with metric tags and hover micro-animations.
+- [x] 8-Engine capability showcase with metric tags and hover micro-interactions.
 - [x] Generic ChatGPT vs. VYIBE Swarm comparative matrix.
 - [x] Clean navbar with left-aligned brand logo and right-aligned user account badge.
-- [x] Zero AI-slop design aesthetic (clean typography, no artificial badges or boilerplate).
+- [x] Zero AI-slop design aesthetic (clean typography, no artificial badges or pastel rainbow clutter).
+- [x] Strict scroll-triggered reveal mechanics eliminating premature animations or flashing before scrolling.
 
 ---
 

@@ -15,7 +15,7 @@ export default function ExtractedMetadata({ data }) {
         </div>
         <div className="extracted-title-row">
           <h3 className="extracted-title">{data.product_name || "Synthesized Concept"}</h3>
-          {data.extraction_confidence && (
+          {data.extraction_confidence && data.extraction_confidence.toLowerCase() !== "high" && (
             <span className={`extraction-conf-badge conf-${data.extraction_confidence}`}>
               EXTRACTION CONFIDENCE: {data.extraction_confidence.toUpperCase()}
             </span>

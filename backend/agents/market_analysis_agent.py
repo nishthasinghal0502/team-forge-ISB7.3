@@ -173,6 +173,13 @@ class MarketOpportunityAgent:
                         has_snip = bool(est.get("evidence_snippet"))
                         est["grounding"] = "strong" if (has_url and has_snip) else "tentative"
 
+            # Honest Null-State Policy:
+            # If zero credible market sizing estimates exist, suppress attractiveness scorecard & confidence
+            if not parsed.get("market_size") or len(parsed.get("market_size", [])) == 0:
+                parsed["market_size"] = []
+                parsed["attractiveness"] = None
+                parsed["confidence"] = None
+
             result = MarketAnalysisResult(**parsed)
             result.analysis_status = "completed"
             return result
