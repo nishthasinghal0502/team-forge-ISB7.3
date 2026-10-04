@@ -1,69 +1,76 @@
 :root {
-  /* Warm Canvas & Paper Palette - Soft, clean off-white cream base */
-  --bg-canvas: #FAF8F5;
+  /* Pristine Modern Canvas & Surface Palette (Replaces warm cream/peach) */
+  --bg-canvas: #F8FAFC;
   --surface-card: #FFFFFF;
-  --surface-card-hover: #FBF9F5;
-  --surface-elevated: #F4F1EA;
-  --border-line: #E2DDD5;
-  --border-subtle: #ECE7DF;
-  --border-strong: #222222;
+  --surface-card-hover: #F1F5F9;
+  --surface-elevated: #F1F5F9;
+  --border-line: #E2E8F0;
+  --border-subtle: #EEF2F6;
+  --border-strong: #0F172A;
 
-  /* Ink Hierarchy - High Contrast Legibility */
-  --ink-primary: #111111;
-  --ink-secondary: #2B2620;
-  --ink-muted: #555555;
-  --ink-subtle: #777777;
-  --ink-faint: #999999;
+  /* Ink Hierarchy - Crisp High-Contrast Typography */
+  --ink-primary: #0F172A;
+  --ink-secondary: #334155;
+  --ink-muted: #64748B;
+  --ink-subtle: #94A3B8;
+  --ink-faint: #CBD5E1;
 
-  /* Gold / Amber Accent System - tuned for WCAG AA contrast on light cream */
-  --accent-amber: #B8860B;
-  --accent-amber-hover: #996F00;
-  --accent-amber-subtle: rgba(184, 134, 11, 0.10);
-  --accent-amber-border: rgba(184, 134, 11, 0.35);
+  /* Modern Primary Accent System (Electric Sapphire / Royal Indigo) */
+  --accent-primary: #2563EB;
+  --accent-primary-hover: #1D4ED8;
+  --accent-primary-subtle: rgba(37, 99, 235, 0.08);
+  --accent-primary-border: rgba(37, 99, 235, 0.25);
 
-  /* Light Editorial Panels (Replacing heavy dark blocks) */
+  /* Modern Amber Accent System (Crisp Honey Gold - WCAG AA compliant on white/slate) */
+  --accent-amber: #D97706;
+  --accent-amber-hover: #B45309;
+  --accent-amber-subtle: rgba(217, 119, 6, 0.08);
+  --accent-amber-border: rgba(217, 119, 6, 0.25);
+
+  /* Modern Card & Panel Tokens */
   --panel-dark-bg: #FFFFFF;
-  --panel-dark-surface: #F8F6F0;
-  --panel-dark-surface-elevated: #F1ECE2;
-  --panel-dark-border: #222222;
-  --panel-dark-border-subtle: #E2DDD5;
-  --panel-dark-text: #111111;
-  --panel-dark-text-secondary: #2B2620;
-  --panel-dark-muted: #555555;
-  --panel-dark-subtle: #777777;
+  --panel-dark-surface: #F8FAFC;
+  --panel-dark-surface-elevated: #F1F5F9;
+  --panel-dark-border: #E2E8F0;
+  --panel-dark-border-subtle: #EEF2F6;
+  --panel-dark-text: #0F172A;
+  --panel-dark-text-secondary: #334155;
+  --panel-dark-muted: #64748B;
+  --panel-dark-subtle: #94A3B8;
 
   /* Strategic Classification Tags */
-  --tag-blue-bg: #E0F2FE;
-  --tag-blue-text: #0369A1;
-  --tag-blue-border: #BAE6FD;
+  --tag-blue-bg: #EFF6FF;
+  --tag-blue-text: #1D4ED8;
+  --tag-blue-border: #BFDBFE;
 
-  --tag-green-bg: #DCFCE7;
+  --tag-green-bg: #F0FDF4;
   --tag-green-text: #15803D;
   --tag-green-border: #BBF7D0;
 
-  --tag-rose-bg: #FEE2E2;
+  --tag-rose-bg: #FEF2F2;
   --tag-rose-text: #B91C1C;
   --tag-rose-border: #FECACA;
 
-  --tag-amber-bg: #FEF3C7;
-  --tag-amber-text: #92400E;
+  --tag-amber-bg: #FFFBEB;
+  --tag-amber-text: #B45309;
   --tag-amber-border: #FDE68A;
 
   /* System States */
-  --error-bg: #FEE2E2;
+  --error-bg: #FEF2F2;
   --error-border: #EF4444;
-  --error-text: #991B1B;
+  --error-text: #B91C1C;
 
   /* Typography */
-  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-display: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "Space Mono", "SF Mono", "Roboto Mono", Consolas, monospace;
 
-  /* Elevation Shadows */
-  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.04);
-  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.05);
-  --shadow-card-hover: 0 6px 18px rgba(0, 0, 0, 0.08);
-  --shadow-panel-dark: 0 4px 16px rgba(0, 0, 0, 0.06);
+  /* Elevation Shadows - Soft Diffuse Multi-Layer */
+  --shadow-subtle: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.03), 0 6px 16px -2px rgba(15, 23, 42, 0.04);
+  --shadow-card-hover: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 12px 24px -4px rgba(15, 23, 42, 0.07);
+  --shadow-panel-dark: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
 }
 
 * {
@@ -91,12 +98,12 @@ body {
 }
 
 ::selection {
-  background-color: #FDE68A;
-  color: #111111;
+  background-color: #DBEAFE;
+  color: #1E40AF;
 }
 
 *:focus-visible {
-  outline: 2px solid var(--accent-amber);
+  outline: 2px solid var(--accent-primary, #2563EB);
   outline-offset: 2px;
 }
 

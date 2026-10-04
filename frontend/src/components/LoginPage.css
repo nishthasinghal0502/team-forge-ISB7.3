@@ -1,10 +1,10 @@
 /* ==========================================================================
-   LOGIN / SIGNUP PAGE STYLING - EDITORIAL RESEARCH CANVAS
+   LOGIN / SIGNUP PAGE STYLING - MODERN SAAS EXECUTIVE CANVAS
    ========================================================================== */
 
 .login-page-container {
   min-height: 100vh;
-  background-color: var(--bg-canvas, #FAF8F5);
+  background-color: var(--bg-canvas, #F8FAFC);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -51,20 +51,20 @@
   align-items: center;
   gap: 8px;
   background: #FFFFFF;
-  border: 1px solid var(--border-line, #E2DDD5);
+  border: 1px solid var(--border-line, #E2E8F0);
   border-radius: 8px;
   padding: 8px 16px;
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--ink-secondary, #2B2620);
+  color: var(--ink-secondary, #334155);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .login-back-btn:hover {
-  background-color: #F7F5EE;
-  border-color: #BDB7AB;
-  color: #111111;
+  background-color: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #0F172A;
 }
 
 /* Authentication Card Wrapper */
@@ -72,10 +72,10 @@
   width: 100%;
   max-width: 480px;
   background: #FFFFFF;
-  border: 1.5px solid var(--border-line, #E2DDD5);
+  border: 1px solid var(--border-line, #E2E8F0);
   border-radius: 14px;
   padding: 40px 36px;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03), 0 16px 40px -4px rgba(15, 23, 42, 0.07);
   margin-top: 40px;
 }
 
@@ -85,18 +85,18 @@
 }
 
 .login-title {
-  font-family: var(--font-serif, "Instrument Serif", Georgia, serif);
+  font-family: var(--font-display);
   font-size: 32px;
-  font-weight: 400;
-  color: #111111;
-  letter-spacing: -0.015em;
+  font-weight: 750;
+  color: #0F172A;
+  letter-spacing: -0.02em;
   margin: 0 0 8px 0;
   line-height: 1.15;
 }
 
 .login-subtitle {
   font-size: 14px;
-  color: #555555;
+  color: #64748B;
   line-height: 1.5;
   margin: 0;
 }
@@ -133,12 +133,12 @@
 }
 
 .google-setup-notice {
-  background: #FAF8F5;
-  border: 1px solid #E2DDD5;
+  background: #F8FAFC;
+  border: 1px solid var(--border-line, #E2E8F0);
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 12.5px;
-  color: #666666;
+  color: #64748B;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -150,7 +150,7 @@
   display: flex;
   align-items: center;
   text-align: center;
-  color: #888888;
+  color: #94A3B8;
   font-family: var(--font-mono, monospace);
   font-size: 11px;
   font-weight: 600;
@@ -163,7 +163,7 @@
 .login-divider::after {
   content: "";
   flex: 1;
-  border-bottom: 1px solid #EAE6DF;
+  border-bottom: 1px solid var(--border-line, #E2E8F0);
 }
 
 .login-divider span {
@@ -189,7 +189,7 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #333333;
+  color: #334155;
 }
 
 .auth-forgot-btn {
@@ -197,7 +197,7 @@
   border: none;
   font-size: 12px;
   font-weight: 500;
-  color: #555555;
+  color: #64748B;
   cursor: pointer;
   padding: 0;
   text-decoration: underline;
@@ -205,24 +205,25 @@
 }
 
 .auth-forgot-btn:hover {
-  color: #111111;
+  color: #0F172A;
 }
 
 .login-text-input {
-  background: #FAF8F5;
-  border: 1.5px solid #E2DDD5;
+  background: #FAFAFA;
+  border: 1px solid var(--border-line, #E2E8F0);
   border-radius: 8px;
   padding: 12px 14px;
   font-size: 14px;
-  color: #111111;
+  color: #0F172A;
   outline: none;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
   font-family: inherit;
 }
 
 .login-text-input:focus {
   background: #FFFFFF;
-  border-color: #111111;
+  border-color: var(--accent-primary, #2563EB);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .login-text-input.input-invalid {
@@ -327,9 +328,9 @@
   text-align: center;
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid #EFECE6;
+  border-top: 1px solid var(--border-line, #E2E8F0);
   font-size: 13.5px;
-  color: #666666;
+  color: #64748B;
 }
 
 .login-switch-btn {
@@ -337,7 +338,7 @@
   border: none;
   font-size: 13.5px;
   font-weight: 700;
-  color: #111111;
+  color: var(--accent-primary, #2563EB);
   cursor: pointer;
   padding: 0 4px;
   text-decoration: underline;
@@ -345,15 +346,15 @@
 }
 
 .login-switch-btn:hover {
-  opacity: 0.75;
+  opacity: 0.85;
 }
 
 /* Forgot Password Modal */
 .forgot-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -363,24 +364,24 @@
 
 .forgot-modal-card {
   background: #FFFFFF;
-  border: 1px solid #E2DDD5;
+  border: 1px solid var(--border-line, #E2E8F0);
   border-radius: 12px;
   padding: 32px 28px;
   max-width: 420px;
   width: 100%;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.25);
 }
 
 .forgot-modal-title {
   font-size: 20px;
   font-weight: 700;
-  color: #111111;
+  color: #0F172A;
   margin: 0 0 8px;
 }
 
 .forgot-modal-desc {
   font-size: 13.5px;
-  color: #555555;
+  color: #64748B;
   line-height: 1.5;
   margin: 0 0 20px;
 }
@@ -394,17 +395,23 @@
 
 .forgot-cancel-btn {
   background: transparent;
-  border: 1px solid #E2DDD5;
+  border: 1px solid var(--border-line, #E2E8F0);
   border-radius: 6px;
   padding: 8px 16px;
   font-size: 13px;
   font-weight: 600;
-  color: #444444;
+  color: #475569;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.forgot-cancel-btn:hover {
+  background: #F1F5F9;
+  color: #0F172A;
 }
 
 .forgot-submit-btn {
-  background: #111111;
+  background: #0F172A;
   color: #FFFFFF;
   border: none;
   border-radius: 6px;
@@ -412,6 +419,11 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.forgot-submit-btn:hover {
+  background: #1E293B;
 }
 
 /* Responsive */

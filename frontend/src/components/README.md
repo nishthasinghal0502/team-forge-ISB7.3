@@ -25,5 +25,6 @@ This directory contains the modular React presentation components for the Startu
 ---
 
 ## Styling & Design System
-- **Theme**: Light Editorial Cream (`#FAF8F5`) with crisp borders (`#222222`), deep black headings (`#111111`), and high-contrast WCAG AA accessible tags.
+- **Theme**: Modern SaaS Slate (`#F8FAFC`) with crisp pure white cards (`#FFFFFF`), subtle slate borders (`#E2E8F0`), obsidian headings (`#0F172A`), electric sapphire accents (`#2563EB`), and high-contrast WCAG AA accessible tags.
+- **Typography**: Plus Jakarta Sans for executive display headlines, Inter for readable research body copy, and Space Mono for metric data and citations.
 - **Responsiveness**: Fluid CSS grid layouts expanding seamlessly from single-column mobile viewports up to 4-column desktop layouts.
