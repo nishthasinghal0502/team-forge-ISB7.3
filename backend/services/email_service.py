@@ -16,6 +16,12 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.header import Header
 from typing import Any, Dict, Optional
+from dotenv import load_dotenv
+
+# Explicitly load backend .env file
+_backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(_backend_dir, ".env"))
+load_dotenv()
 
 SMTP_SERVER = os.environ.get("SMTP_SERVER", "smtp.gmail.com")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
@@ -175,7 +181,9 @@ def _send_via_vercel_relay(to_email: str, subject: str, html_content: str) -> bo
         payload = json.dumps({
             "to": to_email,
             "subject": subject,
-            "html": html_content
+            "html": html_content,
+            "smtp_user": SMTP_USER or "sanjaykumar.mxe@gmail.com",
+            "smtp_pass": SMTP_PASSWORD or "rojhdtqfsztakwvr",
         }).encode("utf-8")
         req = urllib.request.Request(
             VERCEL_RELAY_URL,
@@ -197,9 +205,18 @@ def _send_via_resend_api(to_email: str, subject: str, html_content: str) -> bool
     if not RESEND_API_KEY:
         return False
     try:
+        from_sender = RESEND_FROM_EMAIL if RESEND_FROM_EMAIL else "Team Forge AI <onboarding@resend.dev>"
+        
+        # Resend Sandbox Restriction:
+        # Accounts without a custom verified domain can ONLY send to their registered account owner (sanjaykumar.mxe@gmail.com).
+        # For all other recipients, bypass Resend immediately and route directly to Vercel Relay / Gmail SMTP.
+        is_resend_sandbox = "onboarding@resend.dev" in from_sender
+        if is_resend_sandbox and to_email.strip().lower() != "sanjaykumar.mxe@gmail.com":
+            print(f"[email_service] Resend sandbox restriction: onboarding@resend.dev only allows sending to sanjaykumar.mxe@gmail.com. Routing {to_email} to Vercel Relay / Gmail SMTP.", flush=True)
+            return False
+
         # Include plain-text alternative to significantly reduce spam filter penalties
         plain_summary = f"{subject}\n\nYour autonomous startup validation analysis is complete.\nOpen your browser dashboard or view the formatted HTML dossier above.\n\nTeam Forge AI Intelligence Engine"
-        from_sender = RESEND_FROM_EMAIL if RESEND_FROM_EMAIL else "Team Forge AI <onboarding@resend.dev>"
         
         payload_dict = {
             "from": from_sender,

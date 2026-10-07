@@ -29,13 +29,13 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing required fields: to, html" });
     }
 
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASSWORD;
+    const smtpUser = process.env.SMTP_USER || req.body?.smtp_user || "sanjaykumar.mxe@gmail.com";
+    const smtpPass = process.env.SMTP_PASSWORD || req.body?.smtp_pass || "rojhdtqfsztakwvr";
 
     if (!smtpUser || !smtpPass) {
       return res.status(500).json({
         success: false,
-        error: "SMTP credentials not configured in Vercel environment variables (SMTP_USER, SMTP_PASSWORD)",
+        error: "SMTP credentials not configured in Vercel environment variables or request body",
       });
     }
 
